@@ -1,0 +1,68 @@
+#!/usr/bin/env nextflow
+
+/*
+----------------------------------------------------------------------------------------
+    cfsan/cpipes
+----------------------------------------------------------------------------------------
+    NAME          : CPIPES
+    DESCRIPTION   : Modular Nextflow pipelines at CFSAN, FDA.
+    GITLAB        : https://xxxxxxxxxx/Kranti.Konganti/cpipes-framework
+    JIRA          : https://xxxxxxxxxx/jira/projects/CPIPES/
+    CONTRIBUTORS  : Kranti Konganti
+----------------------------------------------------------------------------------------
+*/
+
+// Enable DSL 2
+nextflow.enable.dsl = 2
+
+// Enable local scope of scripts inside modules' directory
+// Buggy. To be enabled after github.com/nextflow-io/nextflow/issues/3308
+// is solved.
+//
+// nextflow.enable.moduleBinaries = true
+
+// Default routines for MAIN
+include { pipelineBanner; stopNow; } from "${params.routines}"
+
+// Our banner for CPIPES
+log.info pipelineBanner()
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    INCLUDE ALL WORKFLOWS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+switch ("${params.pipeline}") {
+    case "bettercallsal":
+        include { BETTERCALLSAL } from "${params.workflows}${params.fs}${params.pipeline}"
+        break
+    case "bettercallsal_db":
+        include { BETTERCALLSAL_DB } from "${params.workflows}${params.fs}${params.pipeline}"
+        break
+    default:
+        stopNow("PLEASE MENTION A PIPELINE NAME. Ex: --pipeline bettercallsal")
+}
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    RUN ALL WORKFLOWS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+workflow {
+    switch ("${params.pipeline}") {
+        case "bettercallsal":
+            BETTERCALLSAL()
+            break
+        case "bettercallsal_db":
+            BETTERCALLSAL_DB()
+            break
+    }
+}
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    THE END
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
