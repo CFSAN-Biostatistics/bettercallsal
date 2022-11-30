@@ -1,6 +1,6 @@
 # bettercallsal
 
-`bettercallsal` is an automated workflow to assign Salomonella serotype based on [NCBI Pathogens Database](https://www.ncbi.nlm.nih.gov/pathogens). It uses `MASH` to reduce the search space for genome based alignment with `kma` followed by count generation using `salmon`. This workflow is especially useful in a case where a sample is of multi-serovar mixture.
+`bettercallsal` is an automated workflow to assign Salmonella serotype based on [NCBI Pathogens Database](https://www.ncbi.nlm.nih.gov/pathogens). It uses `MASH` to reduce the search space for genome based alignment with `kma` followed by count generation using `salmon`. This workflow is especially useful in a case where a sample is of multi-serovar mixture.
 
 \
 &nbsp;
