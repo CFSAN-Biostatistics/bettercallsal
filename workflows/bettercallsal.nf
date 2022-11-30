@@ -164,7 +164,7 @@ workflow BETTERCALLSAL {
             .collect()
             .set { ch_salmon_res_dirs }
 
-        BCS_RESULTS( ch_salmon_res_dirs )
+        BCS_RESULTS ( ch_salmon_res_dirs )
 
         DUMP_SOFTWARE_VERSIONS (
             software_versions

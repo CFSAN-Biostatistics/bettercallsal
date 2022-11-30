@@ -41,7 +41,7 @@ SOFTWARE.
 \
 &nbsp;
 
-Major portions of **CPIPES** are built on modified versions of many modules, scripts and libraries from [nf-core/modules](https://github.com/nf-core/modules) and [nf-core/rnaseq](https://github.com/nf-core/rna-seq) which are originally licensed under:
+Major portions of **CPIPES** are built on modified versions of many modules, scripts and libraries from [nf-core/modules](https://github.com/nf-core/modules) and [nf-core/rnaseq](https://github.com/nf-core/rnaseq) which are originally licensed under:
 
 ```text
 MIT License

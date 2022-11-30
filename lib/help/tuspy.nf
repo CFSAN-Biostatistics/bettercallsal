@@ -20,7 +20,7 @@ def tuspyHelp(params) {
                 'field separator, | and ' +
                 '5 fields: serotype|asm_lvl|asm_url|snp_cluster_id' +
                 'Ex: serotype=Derby,antigen_formula=4:f,g:-|Scaffold|402440|ftp://...' +
-                '|PDS000096654.2. Mentioning this option will create a pickle file for the' +
+                '|PDS000096654.2. Mentioning this option will create a pickle file for the ' +
                 'provided metadata and exits.' +
                 " Default: ${params.tuspy_s}",
             cliflag: '-s',

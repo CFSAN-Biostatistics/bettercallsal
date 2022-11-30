@@ -59,8 +59,8 @@ This work is currently unpublished. If you are making use of this analysis pipel
 
 ---
 
-1. [Nextflow version 22.10.0](https://github.com/nextflow-io/nextflow/releases/download/v22.10.0/nextflow-22.10.0-all).
-    - Make sure to rename the downloaded binary to `nextflow` and also make sure that it is made available in your `$PATH`.
+1. [Nextflow version 22.10.0](https://github.com/nextflow-io/nextflow/releases/download/v22.10.0/nextflow).
+    - Make the `nextflow` binary executable (`chmod 755 nextflow`) and also make sure that it is made available in your `$PATH`.
     - If your existing `JAVA` install does not support the newest **Nextflow** version, you can try **Amazon**'s `JAVA` (OpenJDK):  [Corretto](https://corretto.aws/downloads/latest/amazon-corretto-17-x64-linux-jdk.tar.gz).
 2. Either of `micromamba` or `docker` or `singularity` installed and made available in your `$PATH`.
     - Running the workflow via `micromamba` software provisioning is **preferred** as it does not require any `sudo` or `admin` privileges or any other configurations with respect to the various container providers.

@@ -104,7 +104,7 @@ Workflow                        : bettercallsal
 
 Author                          : Kranti Konganti
 
-Version                         : 0.2.0
+Version                         : 0.2.1
 
 
 Usage                           : cpipes --pipeline bettercallsal [options]
@@ -291,7 +291,7 @@ Other options                   :
                                   serotype=Derby,antigen_formula=4:f,g:-|
                                   Scaffold|402440|ftp://...|PDS000096654.2.
                                   Mentioning this option will create a pickle
-                                  file for theprovided metadata and exits.
+                                  file for the provided metadata and exits.
                                   Default: false
 
 --tuspy_m                       : Absolute UNIX path to mash screen results
@@ -377,7 +377,7 @@ Other options                   :
 
 --kmaalign_bcg                  : Maintain insignificant gaps. Default: false
 
---kmaalign_ID                   : Minimum consensus ID. Default: 5.0
+--kmaalign_ID                   : Minimum consensus ID. Default: 10.0
 
 --kmaalign_md                   : Minimum depth. Default: false
 
