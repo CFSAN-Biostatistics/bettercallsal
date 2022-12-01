@@ -47,7 +47,8 @@ cpipes \
 After you make sure that you have all the [minimum requirements](../README.md#minimum-requirements) to run the workflow, you can try the `bettercallsal` pipeline on some simulated reads. The following input dataset contains simulated reads for `Montevideo` and `I 4,[5],12:i:-` in about roughly equal proportions.
 
 - Download simulated reads: [S3](https://cfsan-pub-xfer.s3.amazonaws.com/Kranti.Konganti/bettercallsal/bettercallsal_sim_reads.tar.bz2) (~ 3 GB).
-- Download pre-formatted database: [S3](https://cfsan-pub-xfer.s3.amazonaws.com/Kranti.Konganti/bettercallsal/PDG000000002.2491.tar.bz2) (~ 35 GB).
+- Download pre-formatted test database: [S3](https://cfsan-pub-xfer.s3.amazonaws.com/Kranti.Konganti/bettercallsal/PDG000000002.2491.test-db.tar.bz2) (~ 75 MB). This test database works only with the simulated reads.
+- Download pre-formatted full database (**Optional**): If you would like to do a complete run with your own **FASTQ** datasets, you can either create your own [database](./bettercallsal_db.md) or use [PDG000000002.2491](https://cfsan-pub-xfer.s3.amazonaws.com/Kranti.Konganti/bettercallsal/PDG000000002.2491.tar.bz2) version of the database (~ 35 GB).
 - After succesful run of the workflow, your **MultiQC** report should look something like [this](https://cfsan-pub-xfer.s3.amazonaws.com/Kranti.Konganti/bettercallsal/bettercallsal_sim_reads_mqc.html).
 
 Now run the workflow by ignoring quality values since these are simulated base qualities:
