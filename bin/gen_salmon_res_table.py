@@ -405,11 +405,11 @@ def salmon_plot_json(file: None, sample_salmon_counts: None, no_hit: None) -> No
     for serotype in sorted(serotypes):
         if serotype == no_hit:
             continue
-        elif col_count >= len(distinct_color_palette):
+        if col_count == len(distinct_color_palette) - 1:
             col_count = 0
-        else:
-            col_count += 1
-            salmon_counts["categories"][serotype] = {"color": distinct_color_palette[col_count]}
+
+        col_count += 1
+        salmon_counts["categories"][serotype] = {"color": distinct_color_palette[col_count]}
 
     salmon_counts["categories"][no_hit] = {"color": no_hit_color}
     json.dump(salmon_counts, open(file, "w"))
