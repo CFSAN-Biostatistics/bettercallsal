@@ -146,8 +146,14 @@ def kmaalignHelp(params) {
             cliflag: '-mrc',
             clivalue: (params.kmaalign_mrc ?: '')
         ],
-        'kmaalign_mq': [
+        'kmaalign_mp': [
             clihelp: 'Minimum phred score of trailing and leading bases. ' +
+                "Default: ${params.kmaalign_mp}",
+            cliflag: '-mp',
+            clivalue: (params.kmaalign_mp ?: '')
+        ],
+        'kmaalign_mq': [
+            clihelp: 'Set the minimum mapping quality. ' +
                 "Default: ${params.kmaalign_mq}",
             cliflag: '-mq',
             clivalue: (params.kmaalign_mq ?: '')
