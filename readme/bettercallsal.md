@@ -105,7 +105,7 @@ Workflow                        : bettercallsal
 
 Author                          : Kranti Konganti
 
-Version                         : 0.2.1
+Version                         : 0.3.0
 
 
 Usage                           : cpipes --pipeline bettercallsal [options]
@@ -397,8 +397,11 @@ Other options                   :
 
 --kmaalign_mrc                  : Minimum query coverage. Default: 0.99
 
---kmaalign_mq                   : Minimum phred score of trailing and leading
+--kmaalign_mp                   : Minimum phred score of trailing and leading
                                   bases. Default: 30
+
+--kmaalign_mq                   : Set the minimum mapping quality. Default:
+                                  false
 
 --kmaalign_eq                   : Minimum average quality score. Default: 30
 
