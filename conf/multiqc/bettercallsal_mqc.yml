@@ -15,8 +15,12 @@ show_analysis_paths: False
 show_analysis_time: False
 report_section_order:
     BETTERCALLSAL_SALMON_COUNTS:
-        order: -997
+        order: -995
     BETTERCALLSAL_collated_table:
+        order: -996
+    BCS_SOURMASH_MATRIX_collated_table:
+        order: -997
+    fastqc:
         order: -998
     software_versions:
         order: -999

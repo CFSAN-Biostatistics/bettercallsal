@@ -12,6 +12,9 @@ include { \
 include { bbmergeHelp         } from "${params.toolshelp}${params.fs}bbmerge"
 include { mashscreenHelp      } from "${params.toolshelp}${params.fs}mashscreen"
 include { tuspyHelp           } from "${params.toolshelp}${params.fs}tuspy"
+include { sourmashsketchHelp  } from "${params.toolshelp}${params.fs}sourmashsketch"
+include { sourmashgatherHelp  } from "${params.toolshelp}${params.fs}sourmashgather"
+include { sfhpyHelp           } from "${params.toolshelp}${params.fs}sfhpy"
 include { kmaindexHelp        } from "${params.toolshelp}${params.fs}kmaindex"
 include { kmaalignHelp        } from "${params.toolshelp}${params.fs}kmaalign"
 include { salmonidxHelp       } from "${params.toolshelp}${params.fs}salmonidx"
@@ -30,11 +33,15 @@ include { FASTQC                  } from "${params.modules}${params.fs}fastqc${p
 include { BBTOOLS_BBMERGE         } from "${params.modules}${params.fs}bbtools${params.fs}bbmerge${params.fs}main"
 include { MASH_SCREEN             } from "${params.modules}${params.fs}mash${params.fs}screen${params.fs}main"
 include { TOP_UNIQUE_SEROVARS     } from "${params.modules}${params.fs}top_unique_serovars${params.fs}main"
+include { SOURMASH_SKETCH         } from "${params.modules}${params.fs}sourmash${params.fs}sketch${params.fs}main"
+include { SOURMASH_GATHER         } from "${params.modules}${params.fs}sourmash${params.fs}gather${params.fs}main"
 include { KMA_INDEX               } from "${params.modules}${params.fs}kma${params.fs}index${params.fs}main"
 include { KMA_ALIGN               } from "${params.modules}${params.fs}kma${params.fs}align${params.fs}main"
 include { OTF_GENOME              } from "${params.modules}${params.fs}otf_genome${params.fs}main"
 include { SALMON_INDEX            } from "${params.modules}${params.fs}salmon${params.fs}index${params.fs}main"
 include { SALMON_QUANT            } from "${params.modules}${params.fs}salmon${params.fs}quant${params.fs}main"
+include { SOURMASH_COMPARE        } from "${params.modules}${params.fs}custom${params.fs}sourmash${params.fs}compare${params.fs}main"
+include { BCS_DISTANCE_MATRIX     } from "${params.modules}${params.fs}bcs_distance_matrix${params.fs}main"
 include { BCS_RESULTS             } from "${params.modules}${params.fs}bcs_results${params.fs}main"
 include { DUMP_SOFTWARE_VERSIONS  } from "${params.modules}${params.fs}custom${params.fs}dump_software_versions${params.fs}main"
 include { MULTIQC                 } from "${params.modules}${params.fs}multiqc${params.fs}main"
@@ -133,8 +140,35 @@ workflow BETTERCALLSAL {
         MASH_SCREEN ( ch_processed_reads )
 
         TOP_UNIQUE_SEROVARS ( MASH_SCREEN.out.screened )
+        
+        TOP_UNIQUE_SEROVARS.out.genomes_fasta
+            .set { ch_genomes_fasta }
 
-        KMA_INDEX ( TOP_UNIQUE_SEROVARS.out.genomes_fasta )
+        TOP_UNIQUE_SEROVARS.out.failed
+            .set { ch_bcs_calls_failed }
+
+        if (params.sourmashgather_run) {
+            SOURMASH_SKETCH ( 
+                ch_processed_reads
+                    .join ( ch_genomes_fasta )
+            )
+
+            SOURMASH_GATHER ( 
+                SOURMASH_SKETCH.out.signatures,
+                [], [], [], []
+            )
+
+            SOURMASH_GATHER
+                .out
+                .genomes_fasta
+                .set { ch_genomes_fasta }
+
+            ch_bcs_calls_failed
+                .concat( SOURMASH_GATHER.out.failed )
+                .set { ch_bcs_calls_failed }
+        }
+
+        KMA_INDEX ( ch_genomes_fasta )
 
         KMA_ALIGN ( 
             ch_processed_reads
@@ -144,7 +178,7 @@ workflow BETTERCALLSAL {
         OTF_GENOME ( KMA_ALIGN.out.hits )
 
         OTF_GENOME.out.failed
-            .concat( TOP_UNIQUE_SEROVARS.out.failed )
+            .concat( ch_bcs_calls_failed )
             .collectFile(name: 'BCS_NO_CALLS.txt')
             .set { ch_bcs_no_calls }
 
@@ -163,6 +197,51 @@ workflow BETTERCALLSAL {
             .mix ( ch_bcs_no_calls )
             .collect()
             .set { ch_salmon_res_dirs }
+
+        if (params.sourmashsketch_run) {
+            SOURMASH_SKETCH
+                .out
+                .signatures
+                .groupTuple(by: [0])
+                .map { meta, qsigs, dsigs ->
+                    [ qsigs ]
+                }
+                .collect()
+                .flatten()
+                .collect()
+                .set { ch_query_sigs }
+
+            KMA_ALIGN
+                .out
+                .hits
+                .map { meta, hits ->
+                    [ hits ] 
+                }
+                .collect()
+                .flatten()
+                .collectFile(name: 'accessions.txt')
+                .set { ch_otf_genomes }
+
+            SOURMASH_COMPARE( ch_query_sigs, ch_otf_genomes )
+
+            BCS_DISTANCE_MATRIX( 
+                SOURMASH_COMPARE.out.matrix,
+                SOURMASH_COMPARE.out.labels
+            )
+
+            ch_multiqc
+                .concat( BCS_DISTANCE_MATRIX.out.mqc_yml )
+                .set { ch_multiqc }
+
+            software_versions
+                .mix (
+                    SOURMASH_SKETCH.out.versions.ifEmpty(null),
+                    SOURMASH_GATHER.out.versions.ifEmpty(null),
+                    SOURMASH_COMPARE.out.versions.ifEmpty(null),
+                    BCS_DISTANCE_MATRIX.out.versions.ifEmpty(null),
+                )
+                .set { software_versions }
+        }
 
         BCS_RESULTS ( ch_salmon_res_dirs )
 
@@ -243,6 +322,9 @@ def help() {
         bbmergeHelp(params).text +
         mashscreenHelp(params).text +
         tuspyHelp(params).text +
+        sourmashsketchHelp(params).text +
+        sourmashgatherHelp(params).text +
+        sfhpyHelp(params).text +
         kmaindexHelp(params).text +
         kmaalignHelp(params).text +
         salmonidxHelp(params).text +

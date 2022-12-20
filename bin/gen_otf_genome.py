@@ -90,6 +90,7 @@ def main() -> None:
     genomes_dir_suffix = args.genomes_dir_suffix
     out_prefix = args.out_prefix
     accs_suffix = args.accs_suffix
+    accs_seen = dict()
     cat_genomes_gz = os.path.join(os.getcwd(), out_prefix + "_" + genomes_dir_suffix)
     cat_genomes_gz = re.sub("__", "_", str(cat_genomes_gz))
 
@@ -105,7 +106,7 @@ def main() -> None:
 
     if accs_txt and (not os.path.exists(accs_txt) or not os.path.getsize(accs_txt) > 0):
         logging.error("File,\n" + f"{accs_txt}\ndoes not exist " + "or is empty!")
-        failed_sample_name = os.path.basename(accs_txt).rstrip(accs_suffix)
+        failed_sample_name = re.sub(accs_suffix, "", os.path.basename(accs_txt))
         with open(
             os.path.join(os.getcwd(), "_".join([out_prefix, "FAILED.txt"])), "w"
         ) as failed_sample_fh:
@@ -135,8 +136,15 @@ def main() -> None:
                     if line in ["\n", "\n\r"]:
                         empty_lines += 1
                         continue
+                    else:
+                        line = line.strip()
 
-                    genome_file = os.path.join(genomes_dir, line.strip() + genomes_dir_suffix)
+                    if line in accs_seen.keys():
+                        continue
+                    else:
+                        accs_seen[line] = 1
+
+                    genome_file = os.path.join(genomes_dir, line + genomes_dir_suffix)
 
                     if not os.path.exists(genome_file) or os.path.getsize(genome_file) <= 0:
                         logging.error(

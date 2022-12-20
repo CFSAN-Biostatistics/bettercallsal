@@ -12,9 +12,9 @@ process BCS_RESULTS {
         path salmon_res_dirs
 
     output:
-        path 'bettercallsal.tblsum.txt', emit: mqc_txt
+        path 'bettercallsal.tblsum.txt', emit: mqc_txt, optional: true
         path 'bettercallsal_mqc.json'  , emit: mqc_json, optional: true
-        path 'bettercallsal_mqc.yml'   , emit: mqc_yml
+        path 'bettercallsal_mqc.yml'   , emit: mqc_yml, optional: true
         path 'versions.yml'            , emit: versions
 
     when:
@@ -24,7 +24,6 @@ process BCS_RESULTS {
         def args = task.ext.args ?: ''
         args += (params.tuspy_ps ? " -pickle ${params.tuspy_ps}" : '')
         args += (params.gsrpy_snp_clus_metadata ? " -snp ${params.gsrpy_snp_clus_metadata}" : '')
-
         """
         gen_salmon_res_table.py \\
             $args \\

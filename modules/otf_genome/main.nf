@@ -13,7 +13,7 @@ process OTF_GENOME {
 
     output:
         tuple val(meta), path('*_scaffolded_genomic.fna.gz'), emit: genomes_fasta, optional: true
-        path'*FAILED.txt'                                   , emit: failed, optional: true
+        path '*FAILED.txt'                                  , emit: failed, optional: true
         path 'versions.yml'                                 , emit: versions
 
     when:
