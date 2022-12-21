@@ -22,6 +22,9 @@ process SOURMASH_COMPARE {
 
     script:
     def args = task.ext.args ?: ''
+    def sm_compare_mode = ("${params.sourmashcompare_mode.split(',')}"
+        ? "--${params.sourmashcompare_mode.split(',').join(' --')}"
+        : '')
     def sketch_args = (params.sourmashsketch_mode ?: '')
     sketch_args += (params.sourmashsketch_singleton ? ' --singleton ' : '')
     sketch_args += (params.sourmashsketch_p ? " -p ${params.sourmashsketch_p} " : '')
@@ -40,6 +43,7 @@ process SOURMASH_COMPARE {
             CATTED_GENOMES_scaffolded_genomic.fna.gz
 
         sourmash compare \\
+            $sm_compare_mode \\
             --${params.sourmashsketch_mode} \\
             -k ${params.sourmashgather_k} \\
             --csv bcs_sourmash_cont_mat.csv \\

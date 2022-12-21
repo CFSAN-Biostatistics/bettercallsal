@@ -118,7 +118,7 @@ def main() -> None:
         if fcn and ex not in header_cols.keys():
             logging.info(
                 f"The header row in file\n{os.path.basename(csv)}\n"
-                + "does not have a columns whose name are:\n"
+                + "does not have a column whose names are:\n"
                 + f"-fcn: {fcn} and -extract: {ex}"
             )
             exit(1)

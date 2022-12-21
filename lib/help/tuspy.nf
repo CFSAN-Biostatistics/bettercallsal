@@ -1,4 +1,4 @@
-// Help text for get_top_Unique_mash_hit_genomes.py (tuspy) within CPIPES.
+// Help text for get_top_unique_mash_hit_genomes.py (tuspy) within CPIPES.
 
 def tuspyHelp(params) {
 

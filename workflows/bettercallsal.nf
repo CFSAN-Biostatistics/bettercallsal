@@ -215,16 +215,16 @@ workflow BETTERCALLSAL {
                 .out
                 .hits
                 .map { meta, hits ->
-                    [ hits ] 
+                    [ hits ]
                 }
                 .collect()
                 .flatten()
                 .collectFile(name: 'accessions.txt')
                 .set { ch_otf_genomes }
 
-            SOURMASH_COMPARE( ch_query_sigs, ch_otf_genomes )
+            SOURMASH_COMPARE ( ch_query_sigs, ch_otf_genomes )
 
-            BCS_DISTANCE_MATRIX( 
+            BCS_DISTANCE_MATRIX (
                 SOURMASH_COMPARE.out.matrix,
                 SOURMASH_COMPARE.out.labels
             )
