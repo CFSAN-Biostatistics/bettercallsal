@@ -8,14 +8,14 @@ def sfhpyHelp(params) {
 
     toolspecs = [
         'sfhpy_run': [
-            clihelp: 'Run the get_top_unique_mash_hits_genomes.py ' +
+            clihelp: 'Run the sourmash_filter_hits.py ' +
                 'script. Default: ' +
                 (params.sfhpy_run ?: false),
             cliflag: null,
             clivalue: null
         ],
         'sfhpy_fcv': [
-            clihelp: 'Remove genomes whose match with the query FASTQ is less than' +
+            clihelp: 'Remove genomes whose match with the query FASTQ is less than ' +
                 'this much. ' +
                 "Default: ${params.sfhpy_fcv}",
             cliflag: '-fcv',

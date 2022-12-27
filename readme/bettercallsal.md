@@ -69,6 +69,15 @@ Please note that the run time profile `stdkondagac` will run jobs locally using 
 \
 &nbsp;
 
+## Using `sourmash`
+
+Beginning with `v0.3.0` of `bettercallsal` workflow, `sourmash` sketching is used to further narrow down possible serotype hits. It is **ON** by default. This will enable the generation of **ANI Containment** matrix for **Samples** vs **Genomes**. There may be multiple hits for the same serotype in the final **MultiQC** report as multiple genome accessions can belong to a single serotype.
+
+You can turn **OFF** this feature with `--sourmashsketch_run false` option.
+
+\
+&nbsp;
+
 ## Database
 
 The successful run of the workflow requires certain database flat files specific for the workflow.
@@ -83,7 +92,7 @@ Please refer to `bettercallsal_db` [README](./bettercallsal_db.md) if you would 
 ```text
 [Kranti_Konganti@my-unix-box ]$ cpipes --pipeline bettercallsal --help
 N E X T F L O W  ~  version 22.10.0
-Launching `./bettercallsal/cpipes` [agitated_watson] DSL2 - revision: 93f5293f50
+Launching `./bettercallsal/cpipes` [awesome_chandrasekhar] DSL2 - revision: 8da4e11078
 ================================================================================
              (o)
   ___  _ __   _  _ __    ___  ___
@@ -314,6 +323,74 @@ Other options                   :
 --tuspy_n                       : Return up to this many number of top N
                                   unique genome accession hits. Default: 10
 
+--sourmashsketch_run            : Run `sourmash sketch dna` tool. Default:
+                                  true
+
+--sourmashsketch_mode           : Select which type of signatures to be
+                                  created: dna, protein, fromfile or
+                                  translate. Default: dna
+
+--sourmashsketch_p              : Signature parameters to use. Default: abund
+                                  ,scaled=1000,k=51,k=61,k=71
+
+--sourmashsketch_file           : <path>  A text file containing a list of
+                                  sequence files to load. Default: false
+
+--sourmashsketch_f              : Recompute signatures even if the file
+                                  exists. Default: false
+
+--sourmashsketch_merge          : Merge all input files into one signature
+                                  file with the specified name. Default:
+                                  false
+
+--sourmashsketch_singleton      : Compute a signature for each sequence
+                                  record individually. Default: true
+
+--sourmashsketch_name           : Name the signature generated from each file
+                                  after the first record in the file.
+                                  Default: false
+
+--sourmashsketch_randomize      : Shuffle the list of input files randomly.
+                                  Default: false
+
+--sourmashgather_run            : Run `sourmash gather` tool. Default: true
+
+--sourmashgather_n              : Number of results to report. By default,
+                                  will terminate at --sourmashgather_thr_bp
+                                  value. Default: false
+
+--sourmashgather_thr_bp         : Reporting threshold (in bp) for estimated
+                                  overlap with remaining query. Default:
+                                  false
+
+--sourmashgather_ani_ci         : Output confidence intervals for ANI
+                                  estimates. Default: true
+
+--sourmashgather_k              : The k-mer size to select. Default: 71
+
+--sourmashgather_dna            : Choose DNA signature. Default: true
+
+--sourmashgather_rna            : Choose RNA signature. Default: false
+
+--sourmashgather_nuc            : Choose Nucleotide signature. Default: false
+
+--sourmashgather_scaled         : Scaled value should be between 100 and 1e6
+                                  . Default: false
+
+--sourmashgather_inc_pat        : Search only signatures that match this
+                                  pattern in name, filename, or md5. Default
+                                  : false
+
+--sourmashgather_exc_pat        : Search only signatures that do not match
+                                  this pattern in name, filename, or md5.
+                                  Default: false
+
+--sfhpy_run                     : Run the sourmash_filter_hits.py script.
+                                  Default: true
+
+--sfhpy_fcv                     : Remove genomes whose match with the query
+                                  FASTQ is less than this much. Default: 0.1
+
 --kmaindex_run                  : Run kma index tool. Default: true
 
 --kmaindex_t_db                 : Add to existing DB. Default: false
@@ -363,7 +440,7 @@ Other options                   :
                                   false
 
 --kmaalign_and                  : Use both -mrs and p-value on consensus.
-                                  Default: true
+                                  Default: false
 
 --kmaalign_oa                   : Use neither -mrs or p-value on consensus.
                                   Default: false
@@ -378,7 +455,7 @@ Other options                   :
 
 --kmaalign_bcg                  : Maintain insignificant gaps. Default: false
 
---kmaalign_ID                   : Minimum consensus ID. Default: 10.0
+--kmaalign_ID                   : Minimum consensus ID. Default: false
 
 --kmaalign_md                   : Minimum depth. Default: false
 
@@ -393,7 +470,7 @@ Other options                   :
                                   false
 
 --kmaalign_mrs                  : Minimum relative alignment score. Default:
-                                  0.99
+                                  false
 
 --kmaalign_mrc                  : Minimum query coverage. Default: 0.99
 
