@@ -18,7 +18,7 @@ Example: Run the `bettercallsal_db` pipeline and store output at `/data/Kranti_K
 ```bash
 cpipes
       --pipeline bettercallsal_db \
-      --pdg_release PDG000000002.2509 \
+      --pdg_release PDG000000002.2532 \
       --output /data/Kranti_Konganti/bettercallsal_db
 ```
 
