@@ -24,7 +24,7 @@ def sourmashgatherHelp(params) {
         'sourmashgather_thr_bp': [
             clihelp: 'Reporting threshold (in bp) for estimated overlap with remaining query. ' +
                 "Default: ${params.sourmashgather_thr_bp}",
-            cliflag: '--threshold_bp',
+            cliflag: '--threshold-bp',
             clivalue: (params.sourmashgather_thr_bp ?: '')
         ],
         'sourmashgather_ani_ci': [
