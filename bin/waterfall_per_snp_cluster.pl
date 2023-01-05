@@ -295,9 +295,9 @@ sub sort_asm_level {
 
     $level =~ s/(Complete\s+Genome)/a\_$1/
       if ( $level =~ m/Complete\s+Genome/i );
-    $level =~ s/(Chromosome)/a\_$1/ if ( $level =~ m/Chromosome/i );
-    $level =~ s/(Scaffold)/a\_$1/   if ( $level =~ m/Scaffold/i );
-    $level =~ s/(Contig)/a\_$1/     if ( $level =~ m/Contig/i );
+    $level =~ s/(Chromosome)/b\_$1/ if ( $level =~ m/Chromosome/i );
+    $level =~ s/(Scaffold)/c\_$1/   if ( $level =~ m/Scaffold/i );
+    $level =~ s/(Contig)/d\_$1/     if ( $level =~ m/Contig/i );
 
     return $level;
 }
