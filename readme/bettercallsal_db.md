@@ -1,6 +1,6 @@
 # bettercallsal_db
 
-`bettercallsal_db` is an end-to-end automated workflow to generate and consolidate the required DB flat files based on [NCBI Pathogens Database for Salmonella](https://ftp.ncbi.nlm.nih.gov/pathogen/Results/Salmonella/). It first downloads the metadata based on the provided release identifier (Ex: `latest_snps` or `PDG000000002.2509`) and then creates a `mash sketch` based on the filtering strategy. It generates two types of sketches, one that prioritizes genome collection based on SNP clustering (`per_snp_cluster`) and the other just collects up to N number of genome accessions for each `computed_serotype` column from the metadata file (`per_computed_serotype`).
+`bettercallsal_db` is an end-to-end automated workflow to generate and consolidate the required DB flat files based on [NCBI Pathogens Database for Salmonella](https://ftp.ncbi.nlm.nih.gov/pathogen/Results/Salmonella/). It first downloads the metadata based on the provided release identifier (Ex: `latest_snps` or `PDG000000002.2537`) and then creates a `mash sketch` based on the filtering strategy. It generates two types of sketches, one that prioritizes genome collection based on SNP clustering (`per_snp_cluster`) and the other just collects up to N number of genome accessions for each `computed_serotype` column from the metadata file (`per_computed_serotype`).
 
 The `bettercallsal_db` workflow should finish within an hour with stable internet connection.
 
@@ -13,14 +13,20 @@ The `bettercallsal_db` workflow should finish within an hour with stable interne
 cpipes --pipeline bettercallsal_db [options]
 ```
 
+\
+&nbsp;
+
 Example: Run the `bettercallsal_db` pipeline and store output at `/data/Kranti_Konganti/bettercallsal_db`.
 
 ```bash
 cpipes
       --pipeline bettercallsal_db \
-      --pdg_release PDG000000002.2532 \
+      --pdg_release PDG000000002.2537 \
       --output /data/Kranti_Konganti/bettercallsal_db
 ```
+
+\
+&nbsp;
 
 Now you can run the `bettercallsal` workflow with the created database by mentioning the root path to the database with `--bcs_root_dbdir` option.
 
@@ -42,7 +48,7 @@ Please note that the last step of the `bettercallsal_db` workflow named `SCAFFOL
 \
 &nbsp;
 
-### `bettercallsal_db` Help
+## `bettercallsal_db` CLI Help
 
 ```text
 [Kranti_Konganti@my-unix-box ]$ cpipes --pipeline bettercallsal_db --help
@@ -69,7 +75,7 @@ Workflow                        : bettercallsal_db
 
 Author                          : Kranti Konganti
 
-Version                         : 0.3.0
+Version                         : 0.4.0
 
 
 Required                        :

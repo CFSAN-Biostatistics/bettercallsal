@@ -1,4 +1,4 @@
-// Help text for sourmash gather within CPIPES.mashsketch
+// Help text for sourmash gather within CPIPES.
 
 def sourmashgatherHelp(params) {
 
@@ -27,6 +27,24 @@ def sourmashgatherHelp(params) {
             cliflag: '--threshold-bp',
             clivalue: (params.sourmashgather_thr_bp ?: '')
         ],
+        'sourmashgather_ignoreabn': [
+            clihelp: 'Do NOT use k-mer abundances if present. ' +
+                "Default: ${params.sourmashgather_ignoreabn}",
+            cliflag: '--ignore-abundance',
+            clivalue: (params.sourmashgather_ignoreabn ? ' ' : '')
+        ],
+        'sourmashgather_prefetch': [
+            clihelp: 'Use prefetch before gather. ' +
+                "Default: ${params.sourmashgather_prefetch}",
+            cliflag: '--prefetch',
+            clivalue: (params.sourmashgather_prefetch ? ' ' : '')
+        ],
+        'sourmashgather_noprefetch': [
+            clihelp: 'Do not use prefetch before gather. ' +
+                "Default: ${params.sourmashgather_noprefetch}",
+            cliflag: '--no-prefetch',
+            clivalue: (params.sourmashgather_noprefetch ? ' ' : '')
+        ],
         'sourmashgather_ani_ci': [
             clihelp: 'Output confidence intervals for ANI estimates. ' +
                 "Default: ${params.sourmashgather_ani_ci}",
@@ -39,23 +57,53 @@ def sourmashgatherHelp(params) {
             cliflag: '-k',
             clivalue: (params.sourmashgather_k ?: '')
         ],
+        'sourmashgather_protein': [
+            clihelp: 'Choose a protein signature. ' +
+                "Default: ${params.sourmashgather_protein}",
+            cliflag: '--protein',
+            clivalue: (params.sourmashgather_protein ? ' ' : '')
+        ],
+        'sourmashgather_noprotein': [
+            clihelp: 'Do not choose a protein signature. ' +
+                "Default: ${params.sourmashgather_noprotein}",
+            cliflag: '--no-protein',
+            clivalue: (params.sourmashgather_noprotein ? ' ' : '')
+        ],
+        'sourmashgather_dayhoff': [
+            clihelp: 'Choose Dayhoff-encoded amino acid signatures. ' +
+                "Default: ${params.sourmashgather_dayhoff}",
+            cliflag: '--dayhoff',
+            clivalue: (params.sourmashgather_dayhoff ? ' ' : '')
+        ],
+        'sourmashgather_nodayhoff': [
+            clihelp: 'Do not choose Dayhoff-encoded amino acid signatures. ' +
+                "Default: ${params.sourmashgather_nodayhoff}",
+            cliflag: '--no-dayhoff',
+            clivalue: (params.sourmashgather_nodayhoff ? ' ' : '')
+        ],
+        'sourmashgather_hp': [
+            clihelp: 'Choose hydrophobic-polar-encoded amino acid signatures. ' +
+                "Default: ${params.sourmashgather_hp}",
+            cliflag: '--hp',
+            clivalue: (params.sourmashgather_hp ? ' ' : '')
+        ],
+        'sourmashgather_nohp': [
+            clihelp: 'Do not choose hydrophobic-polar-encoded amino acid signatures. ' +
+                "Default: ${params.sourmashgather_nohp}",
+            cliflag: '--no-hp',
+            clivalue: (params.sourmashgather_nohp ? ' ' : '')
+        ],
         'sourmashgather_dna': [
             clihelp: 'Choose DNA signature. ' +
                 "Default: ${params.sourmashgather_dna}",
             cliflag: '--dna',
             clivalue: (params.sourmashgather_dna ? ' ' : '')
         ],
-        'sourmashgather_rna': [
-            clihelp: 'Choose RNA signature. ' +
-                "Default: ${params.sourmashgather_rna}",
-            cliflag: '--rna',
-            clivalue: (params.sourmashgather_rna ? ' ' : '')
-        ],
-        'sourmashgather_nuc': [
-            clihelp: 'Choose Nucleotide signature. ' +
-                "Default: ${params.sourmashgather_nuc}",
-            cliflag: '--nucleotide',
-            clivalue: (params.sourmashgather_nuc ? ' ' : '')
+        'sourmashgather_nodna': [
+            clihelp: 'Do not choose DNA signature. ' +
+                "Default: ${params.sourmashgather_nodna}",
+            cliflag: '--no-dna',
+            clivalue: (params.sourmashgather_nodna ? ' ' : '')
         ],
         'sourmashgather_scaled': [
             clihelp: 'Scaled value should be between 100 and 1e6. ' +

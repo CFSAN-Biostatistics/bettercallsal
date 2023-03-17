@@ -1,4 +1,4 @@
-process SOURMASH_GATHER {
+process SOURMASH_SEARCH {
     tag "$meta.id"
     label 'process_micro'
 
@@ -10,18 +10,12 @@ process SOURMASH_GATHER {
 
     input:
     tuple val(meta), path(signature), path(database)
-    val save_unassigned
     val save_matches_sig
-    val save_prefetch
-    val save_prefetch_csv
 
     output:
     tuple val(meta), path("*.csv.gz")                   , emit: result       , optional: true
     tuple val(meta), path("*_scaffolded_genomic.fna.gz"), emit: genomes_fasta, optional: true
-    tuple val(meta), path("*_unassigned.sig.zip")       , emit: unassigned   , optional: true
     tuple val(meta), path("*_matches.sig.zip")          , emit: matches      , optional: true
-    tuple val(meta), path("*_prefetch.sig.zip")         , emit: prefetch     , optional: true
-    tuple val(meta), path("*_prefetch.csv.gz")          , emit: prefetchcsv  , optional: true
     path "*FAILED.txt"                                  , emit: failed       , optional: true
     path "versions.yml"                                 , emit: versions
 
@@ -32,20 +26,14 @@ process SOURMASH_GATHER {
     def args        = task.ext.args ?: ''
     def args2       = task.ext.args2 ?: ''
     def prefix      = task.ext.prefix ?: "${meta.id}"
-    def unassigned  = save_unassigned   ? "--output-unassigned ${prefix}_unassigned.sig.zip" : ''
-    def matches     = save_matches_sig  ? "--save-matches ${prefix}_matches.sig.zip"         : ''
-    def prefetch    = save_prefetch     ? "--save-prefetch ${prefix}_prefetch.sig.zip"       : ''
-    def prefetchcsv = save_prefetch_csv ? "--save-prefetch-csv ${prefix}_prefetch.csv.gz"    : ''
-    def gd          = params.tuspy_gd   ? "-gd ${params.tuspy_gd}"                           : ''
+    def matches     = save_matches_sig  ? "--save-matches ${prefix}_matches.sig.zip" : ''
+    def gd          = params.tuspy_gd   ? "-gd ${params.tuspy_gd}"                   : ''
 
     """
-    sourmash gather \\
+    sourmash search \\
         $args \\
         --output ${prefix}.csv.gz \\
-        ${unassigned} \\
         ${matches} \\
-        ${prefetch} \\
-        ${prefetchcsv} \\
         ${signature} \\
         ${database}
 

@@ -1,6 +1,6 @@
 process KMA_ALIGN {
     tag "$meta.id"
-    label 'process_low'
+    label 'process_micro'
 
     module (params.enable_module ? "${params.swmodulepath}${params.fs}kma${params.fs}1.4.4" : null)
     conda (params.enable_conda ? "conda-forge::libgcc-ng bioconda::kma=1.4.3" : null)

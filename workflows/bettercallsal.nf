@@ -14,6 +14,7 @@ include { mashscreenHelp      } from "${params.toolshelp}${params.fs}mashscreen"
 include { tuspyHelp           } from "${params.toolshelp}${params.fs}tuspy"
 include { sourmashsketchHelp  } from "${params.toolshelp}${params.fs}sourmashsketch"
 include { sourmashgatherHelp  } from "${params.toolshelp}${params.fs}sourmashgather"
+include { sourmashsearchHelp  } from "${params.toolshelp}${params.fs}sourmashsearch"
 include { sfhpyHelp           } from "${params.toolshelp}${params.fs}sfhpy"
 include { kmaindexHelp        } from "${params.toolshelp}${params.fs}kmaindex"
 include { kmaalignHelp        } from "${params.toolshelp}${params.fs}kmaalign"
@@ -35,6 +36,7 @@ include { MASH_SCREEN             } from "${params.modules}${params.fs}mash${par
 include { TOP_UNIQUE_SEROVARS     } from "${params.modules}${params.fs}top_unique_serovars${params.fs}main"
 include { SOURMASH_SKETCH         } from "${params.modules}${params.fs}sourmash${params.fs}sketch${params.fs}main"
 include { SOURMASH_GATHER         } from "${params.modules}${params.fs}sourmash${params.fs}gather${params.fs}main"
+include { SOURMASH_SEARCH         } from "${params.modules}${params.fs}sourmash${params.fs}search${params.fs}main"
 include { KMA_INDEX               } from "${params.modules}${params.fs}kma${params.fs}index${params.fs}main"
 include { KMA_ALIGN               } from "${params.modules}${params.fs}kma${params.fs}align${params.fs}main"
 include { OTF_GENOME              } from "${params.modules}${params.fs}otf_genome${params.fs}main"
@@ -147,25 +149,51 @@ workflow BETTERCALLSAL {
         TOP_UNIQUE_SEROVARS.out.failed
             .set { ch_bcs_calls_failed }
 
-        if (params.sourmashgather_run) {
-            SOURMASH_SKETCH ( 
+        if (params.sourmashgather_run || params.sourmashsearch_run) {
+            SOURMASH_SKETCH (
                 ch_processed_reads
                     .join ( ch_genomes_fasta )
             )
 
-            SOURMASH_GATHER ( 
-                SOURMASH_SKETCH.out.signatures,
-                [], [], [], []
-            )
+            if (params.sourmashgather_run) {
+                SOURMASH_GATHER (
+                    SOURMASH_SKETCH.out.signatures,
+                    [], [], [], []
+                )
 
-            SOURMASH_GATHER
-                .out
-                .genomes_fasta
-                .set { ch_genomes_fasta }
+                SOURMASH_GATHER
+                    .out
+                    .genomes_fasta
+                    .set { ch_genomes_fasta }
 
-            ch_bcs_calls_failed
-                .concat( SOURMASH_GATHER.out.failed )
-                .set { ch_bcs_calls_failed }
+                ch_bcs_calls_failed
+                    .concat( SOURMASH_GATHER.out.failed )
+                    .set { ch_bcs_calls_failed }
+
+                software_versions
+                    .mix ( SOURMASH_GATHER.out.versions.ifEmpty(null) )
+                    .set { software_versions }
+            }
+
+            if (params.sourmashsearch_run) {
+                SOURMASH_SEARCH (
+                    SOURMASH_SKETCH.out.signatures,
+                    []
+                )
+
+                SOURMASH_SEARCH
+                    .out
+                    .genomes_fasta
+                    .set { ch_genomes_fasta }
+
+                ch_bcs_calls_failed
+                    .concat( SOURMASH_SEARCH.out.failed )
+                    .set { ch_bcs_calls_failed }
+
+                software_versions
+                    .mix ( SOURMASH_SEARCH.out.versions.ifEmpty(null) )
+                    .set { software_versions }
+            }
         }
 
         KMA_INDEX ( ch_genomes_fasta )
@@ -236,7 +264,6 @@ workflow BETTERCALLSAL {
             software_versions
                 .mix (
                     SOURMASH_SKETCH.out.versions.ifEmpty(null),
-                    SOURMASH_GATHER.out.versions.ifEmpty(null),
                     SOURMASH_COMPARE.out.versions.ifEmpty(null),
                     BCS_DISTANCE_MATRIX.out.versions.ifEmpty(null),
                 )
@@ -265,7 +292,7 @@ workflow BETTERCALLSAL {
         DUMP_SOFTWARE_VERSIONS
             .out
             .mqc_yml
-            .concat(
+            .concat (
                 ch_multiqc,
                 BCS_RESULTS.out.mqc_yml,
                 BCS_RESULTS.out.mqc_json
@@ -324,6 +351,7 @@ def help() {
         tuspyHelp(params).text +
         sourmashsketchHelp(params).text +
         sourmashgatherHelp(params).text +
+        sourmashsearchHelp(params).text +
         sfhpyHelp(params).text +
         kmaindexHelp(params).text +
         kmaalignHelp(params).text +

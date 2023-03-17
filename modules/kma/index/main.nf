@@ -1,6 +1,6 @@
 process KMA_INDEX {
     tag "$meta.id"
-    label 'process_only_mem_low'
+    label 'process_nano'
 
     module (params.enable_module ? "${params.swmodulepath}${params.fs}kma${params.fs}1.4.4" : null)
     conda (params.enable_conda ? "conda-forge::libgcc-ng bioconda::kma=1.4.3 conda-forge::coreutils" : null)

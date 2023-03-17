@@ -1,6 +1,6 @@
 process BBTOOLS_BBMERGE {
     tag "$meta.id"
-    label 'process_medium'
+    label 'process_micro'
 
     module (params.enable_module ? "${params.swmodulepath}${params.fs}bbtools${params.fs}38.94" : null)
     conda (params.enable_conda ? "conda-forge::pbzip2 bioconda::bbmap=38.95" : null)

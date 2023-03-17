@@ -2,13 +2,13 @@
 
 # Kranti Konganti
 
-import os
 import argparse
+import gzip
 import inspect
 import logging
-import re
+import os
 import pprint
-import gzip
+import re
 
 # Set logging.
 logging.basicConfig(
