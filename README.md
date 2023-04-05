@@ -33,7 +33,7 @@ We gratefully acknowledge all data contributors, i.e., the Authors and their Ori
 This work is currently unpublished. If you are making use of this analysis pipeline, we would appreciate if you credit this repository while citing us (tentative):
 
 >
->**bettercallsal: Towards precise detection of Salmonella serotypes from enrichment cultures using shotgun metagenomic profiling and its application in an outbreak setting**
+>**bettercallsal: better calling of Salmonella serotypes from enrichment cultures using shotgun metagenomic profiling and its application in an outbreak setting.**
 >
 >Kranti Konganti, Elizabeth Reed, Mark Mammel, Tunc Kayikcioglu, Rachel Binet, Karen Jarvis, Christina M. Ferreira, Rebecca Bell, Jie Zheng, Amanda M. Windsor, Andrea Ottesen, Christopher Grim, and Padmini Ramachandran. *<https://github.com/CFSAN-Biostatistics/bettercallsal>*
 >
