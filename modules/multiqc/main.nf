@@ -1,5 +1,5 @@
 process MULTIQC {
-    label 'process_low'
+    label 'process_micro'
     tag 'MultiQC'
 
     module (params.enable_module ? "${params.swmodulepath}${params.fs}multiqc${params.fs}1.12" : null)
