@@ -103,7 +103,7 @@ def main() -> None:
         )
         exit(0)
 
-    outfile_prefix = os.path.basename(csv).rstrip(".csv.gz")
+    outfile_prefix = re.sub(r"(^.*?)\.csv\.gz", r"\1", os.path.basename(csv))
     outfile = os.path.join(os.getcwd(), "_".join([outfile_prefix, "template_hits.txt"]))
     outfile_failed = os.path.join(os.getcwd(), "_".join([outfile_prefix, "FAILED.txt"]))
 

@@ -33,7 +33,7 @@ We gratefully acknowledge all data contributors, i.e., the Authors and their Ori
 This work is currently unpublished. If you are making use of this analysis pipeline, we would appreciate if you credit this repository while citing us (tentative):
 
 >
->**bettercallsal: better calling of Salmonella serotypes from enrichment cultures using shotgun metagenomic profiling and its application in an outbreak setting.**
+>**bettercallsal: Towards precise detection of Salmonella serotypes from enrichment cultures using shotgun metagenomic profiling and its application in an outbreak setting**
 >
 >Kranti Konganti, Elizabeth Reed, Mark Mammel, Tunc Kayikcioglu, Rachel Binet, Karen Jarvis, Christina M. Ferreira, Rebecca Bell, Jie Zheng, Amanda M. Windsor, Andrea Ottesen, Christopher Grim, and Padmini Ramachandran. *<https://github.com/CFSAN-Biostatistics/bettercallsal>*
 >
@@ -47,7 +47,10 @@ This work is currently unpublished. If you are making use of this analysis pipel
 
 - The main workflow has been used for **research purposes** only.
 - Analysis results should be interpreted with caution and should be treated as suspect, as the pipeline is dependent on the precision of metadata from the **NCBI Pathogen Detection** project for the `per_snp_cluster` and `per_computed_serotype` databases.
-- Internal research with simulated datasets suggests that the `bettercallsal` workflow is more accurate with increased read depth, ideally, at least 5 million read pairs (PE) or 10 million reads (SE) per sample. That being said, it is not a hard-cutoff and you can still try the workflow on low read-depth samples.
+- Internal research with simulated datasets suggests that the `bettercallsal` workflow is more accurate with increased read depth.
+  - For Illumina MiSeq, at least 5 million read pairs (2x300 PE) or 10 million reads (1x300 SE) per sample works well.
+  - For Illumina NextSeq and NovaSeq, around 10 million read pairs (2x150 PE) or 20 million reads (1x150 SE) per sample works well.
+  - That being said, it is not a hard-cutoff and you can still try the workflow on low read-depth samples.
 - **No genome hit** assignment should be interpreted with caution.
 
 \

@@ -9,15 +9,15 @@
 
 - [Minimum Requirements](#minimum-requirements)
 - [Usage and Examples](#usage-and-examples)
+  - [Database](#database)
   - [Input](#input)
   - [Output](#output)
   - [Computational resources](#computational-resources)
   - [Runtime profiles](#runtime-profiles)
   - [your_institution.config](#your_institutionconfig)
   - [Cloud computing](#cloud-computing)
-- [Example data](#example-data)
+  - [Example data](#example-data)
 - [Using sourmash](#using-sourmash)
-- [Database](#database)
 - [bettercallsal CLI Help](#bettercallsal-cli-help)
 
 <!-- /TOC -->
@@ -50,7 +50,7 @@ cpipes --pipeline bettercallsal [options]
 \
 &nbsp;
 
-Example: Run the default `bettercallsal` pipeline in single-end mode.
+**Example**: Run the default `bettercallsal` pipeline in single-end mode.
 
 ```bash
 cd /data/scratch/$USER
@@ -66,7 +66,7 @@ cpipes
 \
 &nbsp;
 
-Example: Run the `bettercallsal` pipeline in paired-end mode. In this mode, `bbmerge.sh` tool will be used to merge paired-end reads based on overlap.
+**Example**: Run the `bettercallsal` pipeline in paired-end mode. In this mode, the `R1` and `R2` files are concatenated. We have found that concatenated reads yields better calling rates. Please refer to the **Methods** and the **Results** section in our [preprint](https://www.biorxiv.org/content/10.1101/2023.04.06.535929v1.full) for more information. Users can still choose to use `bbmerge.sh` by adding the following options on the command-line: `--bbmerge_run true --bcs_concat_pe false`.
 
 ```bash
 cd /data/scratch/$USER
@@ -82,6 +82,17 @@ cpipes \
 ```
 
 \
+&nbsp;
+
+### Database
+
+---
+
+The successful run of the workflow requires certain database flat files specific for the workflow.
+
+Please refer to `bettercallsal_db` [README](./bettercallsal_db.md) if you would like to run the workflow on the latest version of the **PDG** release.
+\
+
 &nbsp;
 
 ### Input
@@ -226,7 +237,9 @@ my_aws_batch {
 \
 &nbsp;
 
-## Example data
+### Example data
+
+---
 
 After you make sure that you have all the [minimum requirements](#minimum-requirements) to run the workflow, you can try the `bettercallsal` pipeline on some simulated reads. The following input dataset contains simulated reads for `Montevideo` and `I 4,[5],12:i:-` in about roughly equal proportions.
 
@@ -265,15 +278,6 @@ You can turn **OFF** this feature with `--sourmashsketch_run false` option.
 \
 &nbsp;
 
-## Database
-
-The successful run of the workflow requires certain database flat files specific for the workflow.
-
-Please refer to `bettercallsal_db` [README](./bettercallsal_db.md) if you would like to run the workflow on the latest version of the **PDG** release.
-
-\
-&nbsp;
-
 ## `bettercallsal` CLI Help
 
 ```text
@@ -301,7 +305,7 @@ Workflow                        : bettercallsal
 
 Author                          : Kranti Konganti
 
-Version                         : 0.4.0
+Version                         : 0.5.0
 
 
 Usage                           : cpipes --pipeline bettercallsal [options]
@@ -363,7 +367,9 @@ Other options                   :
                                   be joined to create final sample name.
                                   Default: 1
 
---bbmerge_run                   : Run BBMerge tool. Default: true
+--bcs_concat_pe                 : Concatenate paired-end files. Default: true
+
+--bbmerge_run                   : Run BBMerge tool. Default: false
 
 --bbmerge_reads                 : Quit after this many read pairs (-1 means
                                   all) Default: -1
@@ -456,6 +462,158 @@ Other options                   :
                                   growing. Faster and more memory-efficient
                                   for large datasets. A float fraction (0-1)
                                   may be specified, default 1. Default: true
+
+--fastp_run                     : Run fastp tool. Default: true
+
+--fastp_failed_out              : Specify whether to store reads that cannot
+                                  pass the filters. Default: false
+
+--fastp_merged_out              : Specify whether to store merged output or
+                                  not. Default: false
+
+--fastp_overlapped_out          : For each read pair, output the overlapped
+                                  region if it has no mismatched base.
+                                  Default: false
+
+--fastp_6                       : Indicate that the input is using phred64
+                                  scoring (it'll be converted to phred33, so
+                                  the output will still be phred33). Default
+                                  : false
+
+--fastp_reads_to_process        : Specify how many reads/pairs are to be
+                                  processed. Default value 0 means process
+                                  all reads. Default: 0
+
+--fastp_fix_mgi_id              : The MGI FASTQ ID format is not compatible
+                                  with many BAM operation tools, enable this
+                                  option to fix it. Default: false
+
+--fastp_A                       : Disable adapter trimming. On by default.
+                                  Default: false
+
+--fastp_adapter_fasta           : Specify a FASTA file to trim both read1 and
+                                  read2 (if PE) by all the sequences in this
+                                  FASTA file. Default: false
+
+--fastp_f                       : Trim how many bases in front of read1.
+                                  Default: 0
+
+--fastp_t                       : Trim how many bases at the end of read1.
+                                  Default: 0
+
+--fastp_b                       : Max length of read1 after trimming. Default
+                                  : 0
+
+--fastp_F                       : Trim how many bases in front of read2.
+                                  Default: 0
+
+--fastp_T                       : Trim how many bases at the end of read2.
+                                  Default: 0
+
+--fastp_B                       : Max length of read2 after trimming. Default
+                                  : 0
+
+--fastp_dedup                   : Enable deduplication to drop the duplicated
+                                  reads/pairs. Default: true
+
+--fastp_dup_calc_accuracy       : Accuracy level to calculate duplication (1~
+                                  6), higher level uses more memory (1G, 2G,
+                                  4G, 8G, 16G, 24G). Default 1 for no-dedup
+                                  mode, and 3 for dedup mode. Default: 6
+
+--fastp_poly_g_min_len          : The minimum length to detect polyG in the
+                                  read tail. Default: 10
+
+--fastp_G                       : Disable polyG tail trimming. Default: true
+
+--fastp_x                       : Enable polyX trimming in 3' ends. Default:
+                                  false
+
+--fastp_poly_x_min_len          : The minimum length to detect polyX in the
+                                  read tail. Default: 10
+
+--fastp_cut_front               : Move a sliding window from front (5') to
+                                  tail, drop the bases in the window if its
+                                  mean quality < threshold, stop otherwise.
+                                  Default: true
+
+--fastp_cut_tail                : Move a sliding window from tail (3') to
+                                  front, drop the bases in the window if its
+                                  mean quality < threshold, stop otherwise.
+                                  Default: false
+
+--fastp_cut_right               : Move a sliding window from tail, drop the
+                                  bases in the window and the right part if
+                                  its mean quality < threshold, and then stop
+                                  . Default: true
+
+--fastp_W                       : Sliding window size shared by --
+                                  fastp_cut_front, --fastp_cut_tail and --
+                                  fastp_cut_right. Default: 20
+
+--fastp_M                       : The mean quality requirement shared by --
+                                  fastp_cut_front, --fastp_cut_tail and --
+                                  fastp_cut_right. Default: 30
+
+--fastp_q                       : The quality value below which a base should
+                                  is not qualified. Default: 30
+
+--fastp_u                       : What percent of bases are allowed to be
+                                  unqualified. Default: 40
+
+--fastp_n                       : How many N's can a read have. Default: 5
+
+--fastp_e                       : If the full reads' average quality is below
+                                  this value, then it is discarded. Default
+                                  : 0
+
+--fastp_l                       : Reads shorter than this length will be
+                                  discarded. Default: 35
+
+--fastp_max_len                 : Reads longer than this length will be
+                                  discarded. Default: 0
+
+--fastp_y                       : Enable low complexity filter. The
+                                  complexity is defined as the percentage of
+                                  bases that are different from its next base
+                                  (base[i] != base[i+1]). Default: true
+
+--fastp_Y                       : The threshold for low complexity filter (0~
+                                  100). Ex: A value of 30 means 30%
+                                  complexity is required. Default: 30
+
+--fastp_U                       : Enable Unique Molecular Identifier (UMI)
+                                  pre-processing. Default: false
+
+--fastp_umi_loc                 : Specify the location of UMI, can be one of
+                                  index1/index2/read1/read2/per_index/
+                                  per_read. Default: false
+
+--fastp_umi_len                 : If the UMI is in read1 or read2, its length
+                                  should be provided. Default: false
+
+--fastp_umi_prefix              : If specified, an underline will be used to
+                                  connect prefix and UMI (i.e. prefix=UMI,
+                                  UMI=AATTCG, final=UMI_AATTCG). Default:
+                                  false
+
+--fastp_umi_skip                : If the UMI is in read1 or read2, fastp can
+                                  skip several bases following the UMI.
+                                  Default: false
+
+--fastp_p                       : Enable overrepresented sequence analysis.
+                                  Default: true
+
+--fastp_P                       : One in this many number of reads will be
+                                  computed for overrepresentation analysis (1
+                                  ~10000), smaller is slower. Default: 20
+
+--fastp_use_custom_adapaters    : Use custom adapter FASTA with fastp on top
+                                  of built-in adapter sequence auto-detection
+                                  . Enabling this option will attempt to find
+                                  and remove all possible Illumina adapter
+                                  and primer sequences but will make the
+                                  workflow run slow. Default: false
 
 --mashscreen_run                : Run `mash screen` tool. Default: true
 

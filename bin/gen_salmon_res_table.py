@@ -2,16 +2,19 @@
 
 # Kranti Konganti
 
-import os
-import inspect
-import logging
 import argparse
+import glob
+import inspect
+import json
+import logging
+import os
+import pickle
 import pprint
 import re
-import glob
-import pickle
-import json
 from collections import defaultdict
+
+import yaml
+
 
 # Multiple inheritence for pretty printing of help text.
 class MultiArgFormatClasses(argparse.RawTextHelpFormatter, argparse.ArgumentDefaultsHelpFormatter):
@@ -107,15 +110,28 @@ def main() -> None:
     rtc = args.rtc
     pickled_sero = args.acc2sero
     no_hit = "No genome hit"
-
+    bcs_sal_yn_prefix = "bettercallsal_salyn"
+    sal_y = "Detected"
+    sal_n = "Not detected"
     ncbi_pathogens_base_url = "https://www.ncbi.nlm.nih.gov/pathogens/"
-    sample2salmon, snp_clusters, multiqc_salmon_counts, seen_sero = (
+
+    sample2salmon, snp_clusters, multiqc_salmon_counts, seen_sero, sal_yn = (
         defaultdict(defaultdict),
         defaultdict(defaultdict),
         defaultdict(defaultdict),
         defaultdict(int),
+        defaultdict(int),
     )
+
+    cell_colors_yml = {
+        bcs_sal_yn_prefix: {sal_y: "#c8e6c9 !important;", sal_n: "#ffcdd2 !important;"}
+    }
+
     salmon_comb_res = os.path.join(os.getcwd(), out_prefix + ".txt")
+    bcs_sal_yn = re.sub(out_prefix, bcs_sal_yn_prefix + ".tblsum", salmon_comb_res)
+    cell_colors_yml_file = re.sub(
+        out_prefix + ".txt", bcs_sal_yn_prefix + ".cellcolors.yml", salmon_comb_res
+    )
     salmon_comb_res_mqc = os.path.join(os.getcwd(), str(out_prefix).split(".")[0] + "_mqc.json")
     salmon_res_files = glob.glob(os.path.join(salmon_res_dir, "*", "quant.sf"), recursive=True)
     salmon_res_file_failed = glob.glob(os.path.join(salmon_res_dir, "BCS_NO_CALLS.txt"))
@@ -264,6 +280,7 @@ def main() -> None:
                         if line in ["\n", "\n\r", "\r"]:
                             continue
                         salmon_comb_res_fh.write(line.strip())
+                        sal_yn[line.strip()] += 0
                         for serotype in serotypes:
                             salmon_comb_res_fh.write("\t-")
                         salmon_comb_res_fh.write(
@@ -324,8 +341,10 @@ def main() -> None:
                             sum(counts[serotype]),
                         )
                         per_serotype_counts += sum(counts[serotype])
+                        sal_yn[sample] += 1
                     else:
                         salmon_comb_res_fh.write(f"\t-")
+                        sal_yn[sample] += 0
 
                 multiqc_salmon_counts[sample].setdefault(
                     no_hit, sum(counts["tot_reads"]) - per_serotype_counts
@@ -335,9 +354,23 @@ def main() -> None:
                 )
                 # ppp.pprint(multiqc_salmon_counts)
                 salmon_comb_res_fh.write(snp_clust_col_val)
+
+            with open(bcs_sal_yn, "w") as bcs_sal_yn_fh:
+                bcs_sal_yn_fh.write("Sample\tSalmonella Presence\tNo. of Serotypes\n")
+                for sample in sal_yn.keys():
+                    if sal_yn[sample] > 0:
+                        bcs_sal_yn_fh.write(f"{sample}\tDetected\t{sal_yn[sample]}\n")
+                    else:
+                        bcs_sal_yn_fh.write(f"{sample}\tNot detected\t{sal_yn[sample]}\n")
+
+            with open(cell_colors_yml_file, "w") as cell_colors_fh:
+                yaml.dump(cell_colors_yml, cell_colors_fh, default_flow_style=False)
+
             salmon_plot_json(salmon_comb_res_mqc, multiqc_salmon_counts, no_hit)
 
         salmon_comb_res_fh.close()
+        bcs_sal_yn_fh.close()
+        cell_colors_fh.close()
 
 
 def salmon_plot_json(file: None, sample_salmon_counts: None, no_hit: None) -> None:
@@ -386,7 +419,7 @@ def salmon_plot_json(file: None, sample_salmon_counts: None, no_hit: None) -> No
     salmon_counts["section_name"] = "Salmon read counts"
     salmon_counts["description"] = (
         "This section shows the read counts from running <code>salmon</code> "
-        + "in <code>--meta</code> mode using SE reads or merged PE reads against "
+        + "in <code>--meta</code> mode using SE, merged PE or concatenated PE reads against "
         + "an on-the-fly <code>salmon</code> index generated from the genome hits "
         + "of <code>kma</code>."
     )

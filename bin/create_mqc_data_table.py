@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
+import os
 import sys
-import yaml
 from textwrap import dedent
+
+import yaml
 
 
 def main():
@@ -12,12 +14,26 @@ def main():
     """
 
     args = sys.argv
-    if len(args) < 2 or len(args) > 3:
-        print(f"\nTwo CL arguments are required!\n")
+    if len(args) < 2 or len(args) >= 4:
+        print(
+            f"\nAt least one argument specifying the *.tblsum file is required.\n"
+            + "No more than 2 command-line arguments should be passed.\n"
+        )
         exit(1)
 
-    table_sum_on = args[1].lower()
-    workflow_name = args[2].lower()
+    table_sum_on = str(args[1]).lower()
+    cell_colors = f"{table_sum_on}.cellcolors.yml"
+
+    if len(args) == 3:
+        description = str(args[2])
+    else:
+        description = "The results table shown here is a collection from all samples."
+
+    if os.path.exists(cell_colors) and os.path.getsize(cell_colors) > 0:
+        with open(cell_colors, "r") as cc_yml:
+            cell_colors = yaml.safe_load(cc_yml)
+    else:
+        cell_colors = dict()
 
     with open(f"{table_sum_on}.tblsum.txt", "r") as tbl:
         header = tbl.readline()
@@ -100,12 +116,15 @@ def main():
             )
 
             for data_col in data_cols[1:]:
-                html.append(
-                    dedent(
-                        f"""<td>{data_col}</td>
-                        """
-                    )
-                )
+                data_col_w_color = f"""<td>{data_col}</td>
+                """
+                if (
+                    table_sum_on in cell_colors.keys()
+                    and data_col in cell_colors[table_sum_on].keys()
+                ):
+                    data_col_w_color = f"""<td style="background-color: {cell_colors[table_sum_on][data_col]}">{data_col}</td>
+                    """
+                html.append(dedent(data_col_w_color))
             html.append("</tr>\n")
         html.append("</tbody>\n")
         html.append("</table>\n")
@@ -116,7 +135,7 @@ def main():
             "section_name": f"{table_sum_on.upper()}",
             "section_href": f"https://github.com/CFSAN-Biostatistics/bettercallsal",
             "plot_type": "html",
-            "description": "The results table shown here is a collection from all samples.",
+            "description": f"{description}",
             "data": ("").join(html),
         }
 

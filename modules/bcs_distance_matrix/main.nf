@@ -33,7 +33,7 @@ process BCS_DISTANCE_MATRIX {
         if [ -e "bcs_sourmash_matrix.tblsum.txt" ] && [ -s "bcs_sourmash_matrix.tblsum.txt" ]; then
             create_mqc_data_table.py \\
                 "bcs_sourmash_matrix" \\
-                ${workflow.manifest.name}
+                "The following table is an asymmetrical matrix of all <code>v.</code> all <b>ANI</b> values between each of the sample <b>FASTQ</b>'s sketch and genome <b>FASTA</b>'s sketch. Please note that there may be multiple genomes belonging to a serotype as processed by the initial screening steps of the workflow."
         fi
 
         cat <<-END_VERSIONS > versions.yml

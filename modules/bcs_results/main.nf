@@ -12,10 +12,10 @@ process BCS_RESULTS {
         path salmon_res_dirs
 
     output:
-        path 'bettercallsal.tblsum.txt', emit: mqc_txt, optional: true
-        path 'bettercallsal_mqc.json'  , emit: mqc_json, optional: true
-        path 'bettercallsal_mqc.yml'   , emit: mqc_yml, optional: true
-        path 'versions.yml'            , emit: versions
+        path 'bettercallsal*.tblsum.txt', emit: mqc_txt, optional: true
+        path 'bettercallsal*_mqc.json'  , emit: mqc_json, optional: true
+        path 'bettercallsal*_mqc.yml'   , emit: mqc_yml, optional: true
+        path 'versions.yml'             , emit: versions
 
     when:
         task.ext.when == null || task.ext.when
@@ -30,7 +30,10 @@ process BCS_RESULTS {
             -sal "."
 
         create_mqc_data_table.py \\
-            "bettercallsal" ${workflow.manifest.name}
+            "bettercallsal" "The following table is an aggregation of serotype calls from all samples which also includes read counts from <code>salmon quant</code> results."
+
+        create_mqc_data_table.py \\
+            "bettercallsal_salyn" "The following table summarizes serotype presence or absence for all samples."
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":

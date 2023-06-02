@@ -10,6 +10,7 @@ include { \
     summaryOfParams; stopNow; fastqEntryPointHelp; sendMail; \
     addPadding; wrapUpHelp    } from "${params.routines}"
 include { bbmergeHelp         } from "${params.toolshelp}${params.fs}bbmerge"
+include { fastpHelp           } from "${params.toolshelp}${params.fs}fastp"
 include { mashscreenHelp      } from "${params.toolshelp}${params.fs}mashscreen"
 include { tuspyHelp           } from "${params.toolshelp}${params.fs}tuspy"
 include { sourmashsketchHelp  } from "${params.toolshelp}${params.fs}sourmashsketch"
@@ -30,8 +31,10 @@ if (params.help) {
 
 // Include any necessary modules and subworkflows
 include { PROCESS_FASTQ           } from "${params.subworkflows}${params.fs}process_fastq"
+include { CAT_CAT                 } from "${params.modules}${params.fs}cat_cat${params.fs}main"
 include { FASTQC                  } from "${params.modules}${params.fs}fastqc${params.fs}main"
 include { BBTOOLS_BBMERGE         } from "${params.modules}${params.fs}bbtools${params.fs}bbmerge${params.fs}main"
+include { FASTP                   } from "${params.modules}${params.fs}fastp${params.fs}main"
 include { MASH_SCREEN             } from "${params.modules}${params.fs}mash${params.fs}screen${params.fs}main"
 include { TOP_UNIQUE_SEROVARS     } from "${params.modules}${params.fs}top_unique_serovars${params.fs}main"
 include { SOURMASH_SKETCH         } from "${params.modules}${params.fs}sourmash${params.fs}sketch${params.fs}main"
@@ -114,6 +117,52 @@ workflow BETTERCALLSAL {
                 .set { software_versions }
         }
 
+        if (params.fastp_run) {
+            FASTP ( ch_processed_reads )
+
+            FASTP
+                .out
+                .passed_reads
+                .set { ch_processed_reads }
+
+            FASTP
+                .out
+                .json
+                .map { meta, json -> [ json ] }
+                .collect()
+                .set { ch_multiqc }
+
+            software_versions
+                .mix ( FASTP.out.versions )
+                .set { software_versions }
+        } else {
+            FASTQC ( ch_processed_reads )
+
+            FASTQC
+                .out
+                .zip
+                .map { meta, zip -> [ zip ] }
+                .collect()
+                .set { ch_multiqc }
+
+            software_versions
+                .mix ( FASTQC.out.versions )
+                .set { software_versions }
+        }
+
+        if (params.bcs_concat_pe && !params.fq_single_end && !params.bbmerge_run) {
+            CAT_CAT ( ch_processed_reads )
+
+            CAT_CAT
+                .out
+                .concatenated_reads
+                .set { ch_processed_reads }
+
+            software_versions
+                .mix ( CAT_CAT.out.versions )
+                .set { software_versions }
+        }
+
         ch_processed_reads
             .map { meta, fastq ->
                 meta.sequence_sketch = params.mash_sketch
@@ -129,15 +178,6 @@ workflow BETTERCALLSAL {
                 fq_gzip.read() != -1
             }
             .set { ch_processed_reads }
-
-        FASTQC ( ch_processed_reads )
-
-        FASTQC
-            .out
-            .zip
-            .map { meta, zip -> [ zip ] }
-            .collect()
-            .set { ch_multiqc }
 
         MASH_SCREEN ( ch_processed_reads )
 
@@ -275,7 +315,6 @@ workflow BETTERCALLSAL {
         DUMP_SOFTWARE_VERSIONS (
             software_versions
                 .mix (
-                    FASTQC.out.versions,
                     MASH_SCREEN.out.versions,
                     TOP_UNIQUE_SEROVARS.out.versions,
                     KMA_INDEX.out.versions,
@@ -343,10 +382,23 @@ def checkMetadataExists(file_path, msg) {
 def help() {
 
     Map helptext = [:]
+    Map bcsConcatHelp = [:]
+    Map fastpAdapterHelp = [:]
+
+    bcsConcatHelp['--bcs_concat_pe'] = "Concatenate paired-end files. " +
+        "Default: ${params.bcs_concat_pe}"
+
+    fastpAdapterHelp['--fastp_use_custom_adapaters'] = "Use custom adapter FASTA with fastp on top of " +
+        "built-in adapter sequence auto-detection. Enabling this option will attempt to find and remove " +
+        "all possible Illumina adapter and primer sequences but will make the workflow run slow. " +
+        "Default: ${params.fastp_use_custom_adapters}"
 
     helptext.putAll (
         fastqEntryPointHelp() +
+        bcsConcatHelp +
         bbmergeHelp(params).text +
+        fastpHelp(params).text +
+        fastpAdapterHelp +
         mashscreenHelp(params).text +
         tuspyHelp(params).text +
         sourmashsketchHelp(params).text +

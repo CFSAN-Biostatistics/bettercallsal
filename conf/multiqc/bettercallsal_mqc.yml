@@ -15,10 +15,14 @@ show_analysis_paths: False
 show_analysis_time: False
 report_section_order:
     BETTERCALLSAL_SALMON_COUNTS:
-        order: -995
+        order: -993
+    BETTERCALLSAL_SALYN_collated_table:
+        order: -994
     BETTERCALLSAL_collated_table:
-        order: -996
+        order: -995
     BCS_SOURMASH_MATRIX_collated_table:
+        order: -996
+    fastp:
         order: -997
     fastqc:
         order: -998
@@ -29,14 +33,22 @@ export_plots: true
 
 # Run only these modules
 run_modules:
+    - fastp
     - fastqc
     - custom_content
 
 module_order:
+    - fastp:
+        name: 'fastp'
+        info: >
+            section of the report shows read statistics <b>before</b> and <b>after</b> adapter trimming
+            with <code>fastp</code> on SE, merged PE or concatenated PE reads.
+        path_filters:
+            - '*.fastp.json'
     - fastqc:
-            name: 'FastQC'
-            info: >
-                section of the report shows FastQC results <b>before</b> adapter trimming
-                on SE reads or on merged PE reads.
-            path_filters:
-                - '*_fastqc.zip'
+        name: 'FastQC'
+        info: >
+            section of the report shows FastQC results <b>before</b> adapter trimming
+            on SE, merged PE or concatenated PE reads.
+        path_filters:
+            - '*_fastqc.zip'
