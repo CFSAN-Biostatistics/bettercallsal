@@ -91,7 +91,6 @@ cpipes \
 The successful run of the workflow requires certain database flat files specific for the workflow.
 
 Please refer to `bettercallsal_db` [README](./bettercallsal_db.md) if you would like to run the workflow on the latest version of the **PDG** release.
-\
 
 &nbsp;
 
