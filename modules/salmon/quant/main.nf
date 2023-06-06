@@ -2,11 +2,11 @@ process SALMON_QUANT {
     tag "$meta.id"
     label "process_medium"
 
-    module (params.enable_module ? "${params.swmodulepath}${params.fs}salmon${params.fs}1.9.0" : null)
-    conda (params.enable_conda ? 'conda-forge::libgcc-ng bioconda::salmon=1.9.0' : null)
+    module (params.enable_module ? "${params.swmodulepath}${params.fs}salmon${params.fs}1.10.0" : null)
+    conda (params.enable_conda ? 'conda-forge::libgcc-ng bioconda::salmon=1.10.1' : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/salmon:1.9.0--h7e5ed60_1' :
-        'quay.io/biocontainers/salmon:1.9.0--h7e5ed60_1' }"
+        'https://depot.galaxyproject.org/singularity/salmon:1.10.1--h7e5ed60_1' :
+        'quay.io/biocontainers/salmon:1.10.1--h7e5ed60_1' }"
     input:
         tuple val(meta), path(reads_or_bam), path(index_or_tr_fasta)
 
