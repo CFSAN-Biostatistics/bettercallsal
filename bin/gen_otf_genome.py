@@ -2,13 +2,14 @@
 
 # Kranti Konganti
 
-import os
 import argparse
+import glob
+import gzip
 import inspect
 import logging
-import re
+import os
 import pprint
-import glob
+import re
 
 # Set logging.
 logging.basicConfig(
@@ -83,6 +84,13 @@ def main() -> None:
         + "sample name is present in the file supplied with -txt option and the suffix\n"
         + "will be stripped and stored in a file that logs samples which have no hits.",
     )
+    parser.add_argument(
+        "-frag_delim",
+        dest="frag_delim",
+        default="\t",
+        required=False,
+        help="The delimitor by which the fields are separated in *_frag.gz file.",
+    )
 
     args = parser.parse_args()
     accs_txt = args.accs_txt
@@ -90,9 +98,13 @@ def main() -> None:
     genomes_dir_suffix = args.genomes_dir_suffix
     out_prefix = args.out_prefix
     accs_suffix = args.accs_suffix
+    frag_delim = args.frag_delim
     accs_seen = dict()
     cat_genomes_gz = os.path.join(os.getcwd(), out_prefix + "_" + genomes_dir_suffix)
     cat_genomes_gz = re.sub("__", "_", str(cat_genomes_gz))
+    frags_gz = os.path.join(os.getcwd(), out_prefix + ".frag.gz")
+    cat_reads_gz = os.path.join(os.getcwd(), out_prefix + "_aln_reads.fna.gz")
+    cat_reads_gz = re.sub("__", "_", cat_reads_gz)
 
     if accs_txt and os.path.exists(cat_genomes_gz) and os.path.getsize(cat_genomes_gz) > 0:
         logging.error(
@@ -158,6 +170,16 @@ def main() -> None:
                         genome_file_h.close()
             accs_txt_fh.close()
         genomes_out_gz.close()
+
+        if len(accs_seen.keys()) > 0 and os.path.exists(frags_gz) and os.path.getsize(frags_gz) > 0:
+            with gzip.open(cat_reads_gz, "wt", encoding="utf-8") as cat_reads_gz_fh:
+                with gzip.open(frags_gz, "rb") as fragz_gz_fh:
+                    for frag_line in fragz_gz_fh.readlines():
+                        frag_lines = frag_line.decode("utf-8").strip().split(frag_delim)
+                        # Per KMA specification, 6=template, 7=query, 1=read
+                        cat_reads_gz_fh.write(f">{frag_lines[6]}\n{frag_lines[0]}\n")
+                fragz_gz_fh.close()
+            cat_reads_gz_fh.close()
 
         if empty_lines > 0:
             empty_lines_msg = f"Skipped {empty_lines} empty line(s).\n"

@@ -5,8 +5,8 @@ process BCS_DISTANCE_MATRIX {
     module (params.enable_module ? "${params.swmodulepath}${params.fs}python${params.fs}3.8.1" : null)
     conda (params.enable_conda ? "conda-forge::python=3.10 conda-forge::pyyaml" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/multiqc:1.13--pyhdfd78af_0' :
-        'quay.io/biocontainers/multiqc:1.13--pyhdfd78af_0' }"
+        'https://depot.galaxyproject.org/singularity/multiqc:1.14--pyhdfd78af_0' :
+        'quay.io/biocontainers/multiqc:1.14--pyhdfd78af_0' }"
 
     input:
         path matrix

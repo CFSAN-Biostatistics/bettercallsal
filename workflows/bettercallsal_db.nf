@@ -92,9 +92,7 @@ workflow BETTERCALLSAL_DB {
             .out
             .asm_chunk_snp_tbl
             .concat( DB_PER_COMPUTED_SEROTYPE.out.asm_chunk_comp_tbl )
-            .map { acc ->
-                [ acc.name.find(/\_comp|\_snp/), acc ]
-            }
+            .map { acc -> [ acc.name.find(/\_comp|\_snp/), acc ] }
             .set { ch_index_metadata }
 
         INDEX_METADATA ( ch_index_metadata )

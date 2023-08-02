@@ -11,6 +11,18 @@ def mlstHelp(params) {
             cliflag: null,
             clivalue: null
         ],
+        'mlst_legacy': [
+            clihelp: "Use old legacy output with allele header row (requires --mlst_scheme). " +
+                "Default: ${params.mlst_legacy}",
+            cliflag: '--legacy',
+            clivalue: (params.mlst_legacy ? ' ' : '')
+        ],
+        'mlst_scheme': [
+            clihelp: "Don't autodetect, force this scheme on all inputs. " +
+                "Default: ${params.mlst_scheme}",
+            cliflag: '--scheme',
+            clivalue: (params.mlst_scheme ?: null)
+        ],
         'mlst_minid': [
             clihelp: "DNA %identity of full allelle to consider 'similar' [~]. " +
                 "Default: ${params.mlst_minid}",

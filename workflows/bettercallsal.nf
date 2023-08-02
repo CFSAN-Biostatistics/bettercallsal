@@ -7,20 +7,23 @@ import nextflow.file.FileHelper
 
 // Include any necessary methods
 include { \
-    summaryOfParams; stopNow; fastqEntryPointHelp; sendMail; \
-    addPadding; wrapUpHelp    } from "${params.routines}"
-include { bbmergeHelp         } from "${params.toolshelp}${params.fs}bbmerge"
-include { fastpHelp           } from "${params.toolshelp}${params.fs}fastp"
-include { mashscreenHelp      } from "${params.toolshelp}${params.fs}mashscreen"
-include { tuspyHelp           } from "${params.toolshelp}${params.fs}tuspy"
-include { sourmashsketchHelp  } from "${params.toolshelp}${params.fs}sourmashsketch"
-include { sourmashgatherHelp  } from "${params.toolshelp}${params.fs}sourmashgather"
-include { sourmashsearchHelp  } from "${params.toolshelp}${params.fs}sourmashsearch"
-include { sfhpyHelp           } from "${params.toolshelp}${params.fs}sfhpy"
-include { kmaindexHelp        } from "${params.toolshelp}${params.fs}kmaindex"
-include { kmaalignHelp        } from "${params.toolshelp}${params.fs}kmaalign"
-include { salmonidxHelp       } from "${params.toolshelp}${params.fs}salmonidx"
-include { gsrpyHelp           } from "${params.toolshelp}${params.fs}gsrpy"
+    summaryOfParams; stopNow; fastqEntryPointHelp; sendMail; conciseHelp; \
+    addPadding; wrapUpHelp     } from "${params.routines}"
+include { bbmergeHelp          } from "${params.toolshelp}${params.fs}bbmerge"
+include { fastpHelp            } from "${params.toolshelp}${params.fs}fastp"
+include { mashscreenHelp       } from "${params.toolshelp}${params.fs}mashscreen"
+include { tuspyHelp            } from "${params.toolshelp}${params.fs}tuspy"
+include { sourmashsketchHelp   } from "${params.toolshelp}${params.fs}sourmashsketch"
+include { sourmashgatherHelp   } from "${params.toolshelp}${params.fs}sourmashgather"
+include { sourmashsearchHelp   } from "${params.toolshelp}${params.fs}sourmashsearch"
+include { sfhpyHelp            } from "${params.toolshelp}${params.fs}sfhpy"
+include { kmaindexHelp         } from "${params.toolshelp}${params.fs}kmaindex"
+include { kmaalignHelp         } from "${params.toolshelp}${params.fs}kmaalign"
+include { megahitHelp          } from "${params.toolshelp}${params.fs}megahit"
+include { mlstHelp             } from "${params.toolshelp}${params.fs}mlst"
+include { abricateHelp         } from "${params.toolshelp}${params.fs}abricate"
+include { salmonidxHelp        } from "${params.toolshelp}${params.fs}salmonidx"
+include { gsrpyHelp            } from "${params.toolshelp}${params.fs}gsrpy"
 
 // Exit if help requested before any subworkflows
 if (params.help) {
@@ -43,6 +46,11 @@ include { SOURMASH_SEARCH         } from "${params.modules}${params.fs}sourmash$
 include { KMA_INDEX               } from "${params.modules}${params.fs}kma${params.fs}index${params.fs}main"
 include { KMA_ALIGN               } from "${params.modules}${params.fs}kma${params.fs}align${params.fs}main"
 include { OTF_GENOME              } from "${params.modules}${params.fs}otf_genome${params.fs}main"
+include { MEGAHIT_ASSEMBLE        } from "${params.modules}${params.fs}megahit${params.fs}assemble${params.fs}main"
+include { MLST                    } from "${params.modules}${params.fs}mlst${params.fs}main"
+include { ABRICATE_RUN            } from "${params.modules}${params.fs}abricate${params.fs}run${params.fs}main"
+include { ABRICATE_SUMMARY        } from "${params.modules}${params.fs}abricate${params.fs}summary${params.fs}main"
+include { TABLE_SUMMARY           } from "${params.modules}${params.fs}cat${params.fs}tables${params.fs}main"
 include { SALMON_INDEX            } from "${params.modules}${params.fs}salmon${params.fs}index${params.fs}main"
 include { SALMON_QUANT            } from "${params.modules}${params.fs}salmon${params.fs}quant${params.fs}main"
 include { SOURMASH_COMPARE        } from "${params.modules}${params.fs}custom${params.fs}sourmash${params.fs}compare${params.fs}main"
@@ -59,6 +67,7 @@ include { MULTIQC                 } from "${params.modules}${params.fs}multiqc${
 
 def reads_platform = 0
 def salmon_idx_decoys = file ( "${params.salmonidx_decoys}" )
+def abricate_dbs = [ 'ncbiamrplus', 'resfinder', 'megares', 'argannot' ]
 
 reads_platform += (params.input ? 1 : 0)
 
@@ -107,9 +116,7 @@ workflow BETTERCALLSAL {
             BBTOOLS_BBMERGE
                 .out
                 .fastq
-                .map { meta, fastq ->
-                    [ meta, [ fastq ] ]
-                }
+                .map { meta, fastq -> [ meta, [ fastq ] ] }
                 .set { ch_processed_reads }
 
             software_versions
@@ -207,7 +214,7 @@ workflow BETTERCALLSAL {
                     .set { ch_genomes_fasta }
 
                 ch_bcs_calls_failed
-                    .concat( SOURMASH_GATHER.out.failed )
+                    .concat ( SOURMASH_GATHER.out.failed )
                     .set { ch_bcs_calls_failed }
 
                 software_versions
@@ -227,7 +234,7 @@ workflow BETTERCALLSAL {
                     .set { ch_genomes_fasta }
 
                 ch_bcs_calls_failed
-                    .concat( SOURMASH_SEARCH.out.failed )
+                    .concat ( SOURMASH_SEARCH.out.failed )
                     .set { ch_bcs_calls_failed }
 
                 software_versions
@@ -240,21 +247,24 @@ workflow BETTERCALLSAL {
 
         KMA_ALIGN ( 
             ch_processed_reads
-                .join(KMA_INDEX.out.idx)
+                .join ( KMA_INDEX.out.idx )
         )
 
-        OTF_GENOME ( KMA_ALIGN.out.hits )
+        OTF_GENOME (
+            KMA_ALIGN.out.hits
+                .join ( KMA_ALIGN.out.frags )
+        )
 
         OTF_GENOME.out.failed
-            .concat( ch_bcs_calls_failed )
-            .collectFile(name: 'BCS_NO_CALLS.txt')
+            .concat ( ch_bcs_calls_failed )
+            .collectFile( name: 'BCS_NO_CALLS.txt' )
             .set { ch_bcs_no_calls }
 
         SALMON_INDEX ( OTF_GENOME.out.genomes_fasta )
 
         SALMON_QUANT (
             ch_processed_reads
-                .join(SALMON_INDEX.out.idx)
+                .join ( SALMON_INDEX.out.idx )
         )
 
         SALMON_QUANT
@@ -271,9 +281,7 @@ workflow BETTERCALLSAL {
                 .out
                 .signatures
                 .groupTuple(by: [0])
-                .map { meta, qsigs, dsigs ->
-                    [ qsigs ]
-                }
+                .map { meta, qsigs, dsigs -> [ qsigs ] }
                 .collect()
                 .flatten()
                 .collect()
@@ -282,13 +290,67 @@ workflow BETTERCALLSAL {
             KMA_ALIGN
                 .out
                 .hits
-                .map { meta, hits ->
-                    [ hits ]
-                }
+                .map { meta, hits -> [ hits ] }
                 .collect()
                 .flatten()
                 .collectFile(name: 'accessions.txt')
                 .set { ch_otf_genomes }
+
+            if (params.megahit_run) {
+
+                MEGAHIT_ASSEMBLE ( OTF_GENOME.out.reads_extracted )
+
+                MEGAHIT_ASSEMBLE
+                    .out
+                    .assembly
+                    .set { ch_asm_filtered_contigs }
+
+                MLST ( ch_asm_filtered_contigs )
+
+                MLST.out.tsv
+                    .map { meta, tsv -> [ 'mlst', tsv] }
+                    .groupTuple(by: [0])
+                    .map { it -> tuple ( it[0], it[1].flatten() ) }
+                    .set { ch_mqc_custom_tbl }
+
+                ABRICATE_RUN ( 
+                    ch_asm_filtered_contigs, 
+                    abricate_dbs
+                )
+
+                ABRICATE_RUN
+                    .out
+                    .abricated
+                    .map { meta, abres -> [ abricate_dbs, abres ] }
+                    .groupTuple(by: [0])
+                    .map { it -> tuple ( it[0], it[1].flatten() ) }
+                    .set { ch_abricated }
+
+                ABRICATE_SUMMARY ( ch_abricated )
+
+                ch_mqc_custom_tbl
+                    .concat (
+                        ABRICATE_SUMMARY.out.ncbiamrplus.map { it -> tuple ( it[0], it[1] )},
+                        ABRICATE_SUMMARY.out.resfinder.map { it -> tuple ( it[0], it[1] )},
+                        ABRICATE_SUMMARY.out.megares.map { it -> tuple ( it[0], it[1] )},
+                        ABRICATE_SUMMARY.out.argannot.map { it -> tuple ( it[0], it[1] )},
+                    )
+                    .groupTuple(by: [0])
+                    .map { it -> [ it[0], it[1].flatten() ]}
+                    .set { ch_mqc_custom_tbl }
+
+                TABLE_SUMMARY ( ch_mqc_custom_tbl )
+
+                software_versions
+                    .mix (
+                        MEGAHIT_ASSEMBLE.out.versions.ifEmpty(null),
+                        MLST.out.versions.ifEmpty(null),
+                        ABRICATE_RUN.out.versions.ifEmpty(null),
+                        ABRICATE_SUMMARY.out.versions.ifEmpty(null),
+                        TABLE_SUMMARY.out.versions.ifEmpty(null)
+                    )
+                    .set { software_versions }
+            }
 
             SOURMASH_COMPARE ( ch_query_sigs, ch_otf_genomes )
 
@@ -298,7 +360,10 @@ workflow BETTERCALLSAL {
             )
 
             ch_multiqc
-                .concat( BCS_DISTANCE_MATRIX.out.mqc_yml )
+                .concat (
+                    BCS_DISTANCE_MATRIX.out.mqc_yml,
+                    TABLE_SUMMARY.out.mqc_yml
+                )
                 .set { ch_multiqc }
 
             software_versions
@@ -384,6 +449,26 @@ def help() {
     Map helptext = [:]
     Map bcsConcatHelp = [:]
     Map fastpAdapterHelp = [:]
+    Map nH = [:]
+    def uHelp = (params.help.getClass().toString() =~ /String/ ? params.help.tokenize(',').join(' ') : '')
+
+    Map defaultHelp = [
+        '--help bbmerge'          : 'Show bbmerge.sh CLI options',
+        '--help fastp'            : 'Show fastp CLI options',
+        '--help mash'             : 'Show mash `screen` CLI options',
+        '--help tuspy'            : 'Show get_top_unique_mash_hit_genomes.py CLI options',
+        '--help sourmashsketch'   : 'Show sourmash `sketch` CLI options',
+        '--help sourmashgather'   : 'Show sourmash `gather` CLI options',
+        '--help sourmashsearch'   : 'Show sourmash `search` CLI options',
+        '--help sfhpy'            : 'Show sourmash_filter_hits.py CLI options',
+        '--help kmaindex'         : 'Show kma `index` CLI options',
+        '--help kmaalign'         : 'Show kma CLI options',
+        '--help megahit'          : 'Show megahit CLI options',
+        '--help mlst'             : 'Show mlst CLI options',
+        '--help abricate'         : 'Show abricate CLI options',
+        '--help salmon'           : 'Show salmon `index` CLI options',
+        '--help gsrpy'            : 'Show gen_salmon_res_table.py CLI options\n'
+    ]
 
     bcsConcatHelp['--bcs_concat_pe'] = "Concatenate paired-end files. " +
         "Default: ${params.bcs_concat_pe}"
@@ -393,24 +478,38 @@ def help() {
         "all possible Illumina adapter and primer sequences but will make the workflow run slow. " +
         "Default: ${params.fastp_use_custom_adapters}"
 
-    helptext.putAll (
-        fastqEntryPointHelp() +
-        bcsConcatHelp +
-        bbmergeHelp(params).text +
-        fastpHelp(params).text +
-        fastpAdapterHelp +
-        mashscreenHelp(params).text +
-        tuspyHelp(params).text +
-        sourmashsketchHelp(params).text +
-        sourmashgatherHelp(params).text +
-        sourmashsearchHelp(params).text +
-        sfhpyHelp(params).text +
-        kmaindexHelp(params).text +
-        kmaalignHelp(params).text +
-        salmonidxHelp(params).text +
-        gsrpyHelp(params).text +
-        wrapUpHelp()
-    )
+    if (params.help.getClass().toString() =~ /Boolean/ || uHelp.size() == 0) {
+        println conciseHelp('fastp,mash')
+        helptext.putAll(defaultHelp)
+    } else {
+        params.help.tokenize(',').each { h ->
+            if (defaultHelp.keySet().findAll{ it =~ /(?i)\b${h}\b/ }.size() == 0) {
+                println conciseHelp('fastp,mash')
+                stopNow("Tool [ ${h} ] is not a part of ${params.pipeline} pipeline.")
+            }
+        }
+
+        helptext.putAll(
+            fastqEntryPointHelp() +
+            bcsConcatHelp +
+            (uHelp =~ /(?i)\bbbmerge/ ? bbmergeHelp(params).text : nH) +
+            (uHelp =~ /(?i)\bfastp/ ? fastpHelp(params).text + fastpAdapterHelp : nH) +
+            (uHelp =~ /(?i)\bmash/ ? mashscreenHelp(params).text : nH) +
+            (uHelp =~ /(?i)\btuspy/ ? tuspyHelp(params).text : nH) +
+            (uHelp =~ /(?i)\bsourmashsketch/ ? sourmashsketchHelp(params).text : nH) +
+            (uHelp =~ /(?i)\bsourmashgather/ ? sourmashgatherHelp(params).text : nH) +
+            (uHelp =~ /(?i)\bsourmashsearch/ ? sourmashsearchHelp(params).text : nH) +
+            (uHelp =~ /(?i)\bsfhpy/ ? sfhpyHelp(params).text : nH) +
+            (uHelp =~ /(?i)\bkmaindex/ ? kmaindexHelp(params).text : nH) +
+            (uHelp =~ /(?i)\bkmaalign/ ? kmaalignHelp(params).text : nH) +
+            (uHelp =~ /(?i)\bmegahit/ ? megahitHelp(params).text : nH) +
+            (uHelp =~ /(?i)\bmlst/ ? mlstHelp(params).text : nH) +
+            (uHelp =~ /(?i)\babricate/ ? abricateHelp(params).text : nH) +
+            (uHelp =~ /(?i)\bsalmon/ ? salmonidxHelp(params).text : nH) +
+            (uHelp =~ /(?i)\bgsrpy/ ? gsrpyHelp(params).text : nH) +
+            wrapUpHelp()
+        )
+    }
 
     return addPadding(helptext)
 }

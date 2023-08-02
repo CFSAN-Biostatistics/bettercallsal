@@ -9,10 +9,11 @@ process OTF_GENOME {
         'quay.io/biocontainers/python:3.10.4' }"
 
     input:
-        tuple val(meta), path(kma_hits)
+        tuple val(meta), path(kma_hits), path(kma_fragz)
 
     output:
         tuple val(meta), path('*_scaffolded_genomic.fna.gz'), emit: genomes_fasta, optional: true
+        tuple val(meta), path('*_aln_reads.fna.gz')         , emit: reads_extracted, optional: true
         path '*FAILED.txt'                                  , emit: failed, optional: true
         path 'versions.yml'                                 , emit: versions
 

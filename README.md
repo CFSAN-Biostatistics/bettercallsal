@@ -17,25 +17,15 @@ It is written in **Nextflow** and is part of the modular data analysis pipelines
 \
 &nbsp;
 
-### Acknowledgements
-
----
-**NCBI Pathogen Detection**:
-
-We gratefully acknowledge all data contributors, i.e., the Authors and their Originating laboratories responsible for obtaining the specimens, and their Submitting laboratories for generating the sequence and metadata and sharing it via the **NCBI Pathogen Detection** site, some of which this research utilizes.
-
-\
-&nbsp;
-
 ### Citing `bettercallsal`
 
 ---
-This work is currently unpublished. If you are making use of this analysis pipeline, we would appreciate if you credit this repository while citing us (tentative):
+This work is published in [Frontiers in Microbiology](https://www.frontiersin.org/articles/10.3389/fmicb.2023.1200983/full).
 
 >
 >**bettercallsal: better calling of Salmonella serotypes from enrichment cultures using shotgun metagenomic profiling and its application in an outbreak setting.**
 >
->Kranti Konganti, Elizabeth Reed, Mark Mammel, Tunc Kayikcioglu, Rachel Binet, Karen Jarvis, Christina M. Ferreira, Rebecca Bell, Jie Zheng, Amanda M. Windsor, Andrea Ottesen, Christopher Grim, and Padmini Ramachandran. *<https://github.com/CFSAN-Biostatistics/bettercallsal>*
+>Kranti Konganti, Elizabeth Reed, Mark Mammel, Tunc Kayikcioglu, Rachel Binet, Karen Jarvis, Christina M. Ferreira, Rebecca Bell, Jie Zheng, Amanda M. Windsor, Andrea Ottesen, Christopher Grim, and Padmini Ramachandran. *Frontiers in Microbiology*. [https://doi.org/10.3389/fmicb.2023.1200983](https://www.frontiersin.org/articles/10.3389/fmicb.2023.1200983/full).
 >
 
 \
@@ -52,6 +42,16 @@ This work is currently unpublished. If you are making use of this analysis pipel
   - For Illumina NextSeq and NovaSeq, around 10 million read pairs (2x150 PE) or 20 million reads (1x150 SE) per sample works well.
   - That being said, it is not a hard-cutoff and you can still try the workflow on low read-depth samples.
 - **No genome hit** assignment should be interpreted with caution.
+
+\
+&nbsp;
+
+### Acknowledgements
+
+---
+**NCBI Pathogen Detection**:
+
+We gratefully acknowledge all data contributors, i.e., the Authors and their Originating laboratories responsible for obtaining the specimens, and their Submitting laboratories for generating the sequence and metadata and sharing it via the **NCBI Pathogen Detection** site, some of which this research utilizes.
 
 \
 &nbsp;

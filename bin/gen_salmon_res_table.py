@@ -411,6 +411,60 @@ def salmon_plot_json(file: None, sample_salmon_counts: None, no_hit: None) -> No
         "#4F8F23",
     ]
 
+    # Credit: https://mokole.com/palette.html
+    # Will use this palette if we run out ouf
+    # 20 serotypes. More than 50 serotypes
+    # per run is probably rare but if not,
+    # will cycle through about 45.
+    distinct_color_palette2 = [
+        "#2F4F4F",  # darkslategray
+        "#556B2F",  # darkolivegreen
+        "#A0522D",  # sienna
+        "#2E8B57",  # seagreen
+        "#006400",  # darkgreen
+        "#8B0000",  # darkred
+        "#808000",  # olive
+        "#BC8F8F",  # rosybrown
+        "#663399",  # rebeccapurple
+        "#B8860B",  # darkgoldenrod
+        "#4682B4",  # steelblue
+        "#000080",  # navy
+        "#D2691E",  # chocolate
+        "#9ACD32",  # yellowgreen
+        "#20B2AA",  # lightseagreen
+        "#CD5C5C",  # indianred
+        "#8FBC8F",  # darkseagreen
+        "#800080",  # purple
+        "#B03060",  # maroon3
+        "#FF8C00",  # darkorange
+        "#FFD700",  # gold
+        "#FFFF00",  # yellow
+        "#DEB887",  # burlywood
+        "#00FF00",  # lime
+        "#BA55D3",  # mediumorchid
+        "#00FA9A",  # mediumspringgreen
+        "#4169E1",  # royalblue
+        "#E9967A",  # darksalmon
+        "#DC143C",  # crimson
+        "#00FFFF",  # aqua
+        "#F4A460",  # sandybrown
+        "#9370DB",  # mediumpurple
+        "#0000FF",  # blue
+        "#ADFF2F",  # greenyellow
+        "#FF6347",  # tomato
+        "#D8BFD8",  # thistle
+        "#FF00FF",  # fuchsia
+        "#DB7093",  # palevioletred
+        "#F0E68C",  # khaki
+        "#6495ED",  # cornflower
+        "#DDA0DD",  # plum
+        "#EE82EE",  # violet
+        "#7FFFD4",  # aquamarine
+        "#FAFAD2",  # lightgoldenrod
+        "#FF69B4",  # hotpink
+        "#FFB6C1",  # lightpink
+    ]
+
     no_hit_color = "#434348"
     col_count = 0
     serotypes = set()
@@ -434,6 +488,9 @@ def salmon_plot_json(file: None, sample_salmon_counts: None, no_hit: None) -> No
     for sample in sorted(sample_salmon_counts.keys()):
         serotypes.update(list(sample_salmon_counts[sample].keys()))
         salmon_counts["data"][sample] = sample_salmon_counts[sample]
+
+    if len(serotypes) > len(distinct_color_palette):
+        distinct_color_palette = distinct_color_palette2
 
     for serotype in sorted(serotypes):
         if serotype == no_hit:

@@ -1,6 +1,6 @@
 process FASTQC {
     tag "$meta.id"
-    label 'process_low'
+    label 'process_micro'
 
     module (params.enable_module ? "${params.swmodulepath}${params.fs}fastqc${params.fs}0.11.9" : null)
     conda (params.enable_conda ? "conda-forge::perl bioconda::fastqc=0.11.9" : null)

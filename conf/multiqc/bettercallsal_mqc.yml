@@ -15,12 +15,22 @@ show_analysis_paths: False
 show_analysis_time: False
 report_section_order:
     BETTERCALLSAL_SALMON_COUNTS:
-        order: -993
+        order: -898
     BETTERCALLSAL_SALYN_collated_table:
-        order: -994
+        order: -899
     BETTERCALLSAL_collated_table:
-        order: -995
+        order: -900
     BCS_SOURMASH_MATRIX_collated_table:
+        order: -991
+    MLST_collated_table:
+        order: -992
+    ABRICATE_NCBIAMRPLUS_collated_table:
+        order: -993
+    ABRICATE_MEGARES_collated_table:
+        order: -994
+    ABRICATE_RESFINDER_collated_table:
+        order: -995
+    ABRICATE_ARGANNOT_collated_table:
         order: -996
     fastp:
         order: -997

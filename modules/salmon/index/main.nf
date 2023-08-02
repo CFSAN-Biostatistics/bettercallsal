@@ -1,6 +1,6 @@
 process SALMON_INDEX {
     tag "$meta.id"
-    label "process_low"
+    label "process_micro"
 
     module (params.enable_module ? "${params.swmodulepath}${params.fs}salmon${params.fs}1.10.0" : null)
     conda (params.enable_conda ? 'conda-forge::libgcc-ng bioconda::salmon=1.10.1' : null)

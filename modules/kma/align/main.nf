@@ -15,6 +15,7 @@ process KMA_ALIGN {
         path "${meta.id}_kma_res"
         tuple val(meta), path("${meta.id}_kma_res${params.fs}*.res")              , emit: res
         tuple val(meta), path("${meta.id}_kma_res${params.fs}*.mapstat")          , emit: mapstat, optional: true
+        tuple val(meta), path("${meta.id}_kma_res${params.fs}*.frag.gz")          , emit: frags, optional: true
         tuple val(meta), path("${meta.id}_kma_res${params.fs}*_template_hits.txt"), emit: hits, optional: true
         path "versions.yml"                                                       , emit: versions
 

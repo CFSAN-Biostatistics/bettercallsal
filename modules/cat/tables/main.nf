@@ -1,13 +1,13 @@
 process TABLE_SUMMARY {
     tag "$table_sum_on"
-    label 'process_low'
+    label 'process_micro'
 
     // Requires `pyyaml` which does not have a dedicated container but is in the MultiQC container
     module (params.enable_module ? "${params.swmodulepath}${params.fs}python${params.fs}3.8.1" : null)
     conda (params.enable_conda ? "conda-forge::python=3.9 conda-forge::pyyaml conda-forge::coreutils" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/multiqc:1.11--pyhdfd78af_0' :
-        'quay.io/biocontainers/multiqc:1.11--pyhdfd78af_0' }"
+        'https://depot.galaxyproject.org/singularity/multiqc:1.14--pyhdfd78af_0' :
+        'quay.io/biocontainers/multiqc:1.14--pyhdfd78af_0' }"
 
     input:
     tuple val(table_sum_on), path(tables)
@@ -39,7 +39,7 @@ process TABLE_SUMMARY {
         filenum=\$((filenum+1))
     done
 
-    create_mqc_data_table.py $table_sum_on ${workflow.manifest.name}
+    create_mqc_data_table.py $table_sum_on
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

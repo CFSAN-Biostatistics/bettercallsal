@@ -2,11 +2,11 @@ process MULTIQC {
     label 'process_micro'
     tag 'MultiQC'
 
-    module (params.enable_module ? "${params.swmodulepath}${params.fs}multiqc${params.fs}1.12" : null)
-    conda (params.enable_conda ? 'bioconda::multiqc=1.12 conda-forge::spectra conda-forge::lzstring' : null)
+    module (params.enable_module ? "${params.swmodulepath}${params.fs}multiqc${params.fs}1.14" : null)
+    conda (params.enable_conda ? 'bioconda::multiqc=1.14 conda-forge::spectra conda-forge::lzstring' : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/multiqc:1.12--pyhdfd78af_0' :
-        'quay.io/biocontainers/multiqc:1.12--pyhdfd78af_0' }"
+        'https://depot.galaxyproject.org/singularity/multiqc:1.14--pyhdfd78af_0' :
+        'quay.io/biocontainers/multiqc:1.14--pyhdfd78af_0' }"
 
     input:
     path multiqc_files

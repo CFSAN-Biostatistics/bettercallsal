@@ -261,6 +261,26 @@ def fastqEntryPointHelp() {
     return helptext
 }
 
+// Show concise help text if configured within the main workflow.
+def conciseHelp(def tool = null) {
+    Map fgcolors = getANSIColors()
+
+    tool ?= "fastp"
+    tools = tool?.tokenize(',')
+
+    return """
+${dashedLine()}
+Show configurable CLI options for each tool within ${fgcolors.magenta}${params.pipeline}${fgcolors.reset}
+${dashedLine()}
+Ex: cpipes --pipeline ${params.pipeline} --help
+""" + (tools.size() > 1 ? "Ex: cpipes --pipeline ${params.pipeline} --help ${tools[0]}"
+    + """
+Ex: cpipes --pipeline ${params.pipeline} --help ${tools[0]},${tools[1]}
+${dashedLine()}""".stripIndent() : """Ex: cpipes --pipeline ${params.pipeline} --help ${tool}
+${dashedLine()}""".stripIndent())
+
+}
+
 // Wrap help text with the following options
 def wrapUpHelp() {
 
