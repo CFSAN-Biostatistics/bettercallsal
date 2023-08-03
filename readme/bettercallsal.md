@@ -42,10 +42,10 @@
 
 ## CFSAN GalaxyTrakr
 
-The bettercallsal pipeline is also available for use on the [Galaxy instance supported by CFSAN, FDA](https://galaxytrakr.org/). If you wish to run the analysis using **Galaxy**, please register for an account, after which you can run the workflow using some test data by following the instructions
+The `bettercallsal` pipeline is also available for use on the [Galaxy instance supported by CFSAN, FDA](https://galaxytrakr.org/). If you wish to run the analysis using **Galaxy**, please register for an account, after which you can run the workflow using some test data by following the instructions
 [from this PDF](https://research.foodsafetyrisk.org/bettercallsal/galaxytrakr/bettercallsal_on_cfsan_galaxytrakr.pdf).
 
-Please note that the pipeline on [CFSAN GalaxyTrakr](https://galaxytrakr.org) in most cases may be a version older than the one on github due to testing prioritization.
+Please note that the pipeline on [CFSAN GalaxyTrakr](https://galaxytrakr.org) in most cases may be a version older than the one on **GitHub** due to testing prioritization.
 
 \
 &nbsp;

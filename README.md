@@ -23,9 +23,9 @@ It is written in **Nextflow** and is part of the modular data analysis pipelines
 This work is published in [Frontiers in Microbiology](https://www.frontiersin.org/articles/10.3389/fmicb.2023.1200983/full).
 
 >
->**bettercallsal: better calling of Salmonella serotypes from enrichment cultures using shotgun metagenomic profiling and its application in an outbreak setting.**
+>**bettercallsal: better calling of _Salmonella_ serotypes from enrichment cultures using shotgun metagenomic profiling and its application in an outbreak setting**
 >
->Kranti Konganti, Elizabeth Reed, Mark Mammel, Tunc Kayikcioglu, Rachel Binet, Karen Jarvis, Christina M. Ferreira, Rebecca Bell, Jie Zheng, Amanda M. Windsor, Andrea Ottesen, Christopher Grim, and Padmini Ramachandran. *Frontiers in Microbiology*. [https://doi.org/10.3389/fmicb.2023.1200983](https://www.frontiersin.org/articles/10.3389/fmicb.2023.1200983/full).
+>Kranti Konganti, Elizabeth Reed, Mark Mammel, Tunc Kayikcioglu, Rachel Binet, Karen Jarvis, Christina M. Ferreira, Rebecca Bell, Jie Zheng, Amanda M. Windsor, Andrea Ottesen, Christopher Grim, and Padmini Ramachandran. _**Frontiers in Microbiology**_. [https://doi.org/10.3389/fmicb.2023.1200983](https://www.frontiersin.org/articles/10.3389/fmicb.2023.1200983/full).
 >
 
 \

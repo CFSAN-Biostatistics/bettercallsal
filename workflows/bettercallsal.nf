@@ -341,6 +341,10 @@ workflow BETTERCALLSAL {
 
                 TABLE_SUMMARY ( ch_mqc_custom_tbl )
 
+                ch_multiqc
+                    .concat ( TABLE_SUMMARY.out.mqc_yml )
+                    .set { ch_multiqc }
+
                 software_versions
                     .mix (
                         MEGAHIT_ASSEMBLE.out.versions.ifEmpty(null),
@@ -360,10 +364,7 @@ workflow BETTERCALLSAL {
             )
 
             ch_multiqc
-                .concat (
-                    BCS_DISTANCE_MATRIX.out.mqc_yml,
-                    TABLE_SUMMARY.out.mqc_yml
-                )
+                .concat ( BCS_DISTANCE_MATRIX.out.mqc_yml )
                 .set { ch_multiqc }
 
             software_versions
