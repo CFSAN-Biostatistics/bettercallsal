@@ -58,6 +58,16 @@ Clone or download this repository and then call `cpipes`.
 cpipes --pipeline bettercallsal [options]
 ```
 
+Alternatively, you can use `nextflow` to directly pull and run the pipeline.
+
+```bash
+nextflow pull CFSAN-Biostatistics/bettercallsal
+nextflow list
+nextflow info CFSAN-Biostatistics/bettercallsal
+nextflow run CFSAN-Biostatistics/bettercallsal --pipeline bettercallsal_db --help
+nextflow run CFSAN-Biostatistics/bettercallsal --pipeline bettercallsal --help
+```
+
 \
 &nbsp;
 
