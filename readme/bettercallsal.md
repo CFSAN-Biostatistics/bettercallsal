@@ -31,10 +31,16 @@
 1. [Nextflow version 22.10.0](https://github.com/nextflow-io/nextflow/releases/download/v22.10.0/nextflow).
     - Make the `nextflow` binary executable (`chmod 755 nextflow`) and also make sure that it is made available in your `$PATH`.
     - If your existing `JAVA` install does not support the newest **Nextflow** version, you can try **Amazon**'s `JAVA` (OpenJDK):  [Corretto](https://corretto.aws/downloads/latest/amazon-corretto-17-x64-linux-jdk.tar.gz).
-2. Either of `micromamba` or `docker` or `singularity` installed and made available in your `$PATH`.
+2. Either of `micromamba` (version `1.0.0`) or `docker` or `singularity` installed and made available in your `$PATH`.
     - Running the workflow via `micromamba` software provisioning is **preferred** as it does not require any `sudo` or `admin` privileges or any other configurations with respect to the various container providers.
     - To install `micromamba` for your system type, please follow these [installation steps](https://mamba.readthedocs.io/en/latest/micromamba-installation.html#manual-installation) and make sure that the `micromamba` binary is made available in your `$PATH`.
     - Just the `curl` step is sufficient to download the binary as far as running the workflows are concerned.
+    - Once you have finished the installation, **it is important that you downgrade `micromamba` to version `1.0.0`**.
+
+        ```bash
+        micromamba self-update --version 1.0.0
+        ```
+
 3. Minimum of 10 CPU cores and about 16 GBs for main workflow steps. More memory may be required if your **FASTQ** files are big.
 
 \
