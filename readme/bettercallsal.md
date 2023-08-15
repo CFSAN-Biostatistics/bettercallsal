@@ -33,7 +33,7 @@
     - If your existing `JAVA` install does not support the newest **Nextflow** version, you can try **Amazon**'s `JAVA` (OpenJDK):  [Corretto](https://corretto.aws/downloads/latest/amazon-corretto-17-x64-linux-jdk.tar.gz).
 2. Either of `micromamba` or `docker` or `singularity` installed and made available in your `$PATH`.
     - Running the workflow via `micromamba` software provisioning is **preferred** as it does not require any `sudo` or `admin` privileges or any other configurations with respect to the various container providers.
-    - To install `micromamba` for your system type, please follow these [installation steps](https://mamba.readthedocs.io/en/latest/installation.html#manual-installation) and make sure that the `micromamba` binary is made available in your `$PATH`.
+    - To install `micromamba` for your system type, please follow these [installation steps](https://mamba.readthedocs.io/en/latest/micromamba-installation.html#manual-installation) and make sure that the `micromamba` binary is made available in your `$PATH`.
     - Just the `curl` step is sufficient to download the binary as far as running the workflows are concerned.
 3. Minimum of 10 CPU cores and about 16 GBs for main workflow steps. More memory may be required if your **FASTQ** files are big.
 
