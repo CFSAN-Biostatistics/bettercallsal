@@ -110,6 +110,7 @@ def main() -> None:
     rtc = args.rtc
     pickled_sero = args.acc2sero
     no_hit = "No genome hit"
+    no_presence = "Salmonella presence not detected"
     bcs_sal_yn_prefix = "bettercallsal_salyn"
     sal_y = "Detected"
     sal_n = "Not detected"
@@ -168,6 +169,11 @@ def main() -> None:
             with open(salmon_comb_res, "w") as salmon_comb_res_fh:
                 salmon_comb_res_fh.write(f"Sample\n{no_hit}s in any samples\n")
             salmon_comb_res_fh.close()
+
+            with open(bcs_sal_yn, "w") as bcs_sal_yn_fh:
+                bcs_sal_yn_fh.write(f"Sample\n{no_presence} in any samples\n")
+            bcs_sal_yn_fh.close()
+
             exit(0)
 
     if rtc and os.path.exists(rtc) and os.path.getsize(rtc) > 0:
