@@ -21,7 +21,7 @@ def main():
         )
         exit(1)
 
-    table_sum_on = str(args[1]).lower()
+    table_sum_on = str(args[1]).lower() + ".tblsum.txt"
     cell_colors = f"{table_sum_on}.cellcolors.yml"
 
     if len(args) == 3:
@@ -35,7 +35,10 @@ def main():
     else:
         cell_colors = dict()
 
-    with open(f"{table_sum_on}.tblsum.txt", "r") as tbl:
+    if not (os.path.exists(table_sum_on) and os.path.getsize(table_sum_on) > 0):
+        exit(0)
+
+    with open(table_sum_on, "r") as tbl:
         header = tbl.readline()
         header_cols = header.strip().split("\t")
 
