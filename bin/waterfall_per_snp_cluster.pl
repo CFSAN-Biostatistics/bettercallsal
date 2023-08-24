@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 
 # Kranti Konganti
-# 10/12/2022
+# 08/23/2023
 
 use strict;
 use warnings;
@@ -245,7 +245,7 @@ foreach my $snp_cluster_id ( keys %$snp_2_acc ) {
         }
         printf $Stderr "%-17s  |  %s\n", $snp_cluster_id, $count
           if ( $count > 0 );
-        last if ( $count == $serovar_limit );
+        last if ( $count >= $serovar_limit );
     }
 }
 
@@ -283,9 +283,8 @@ sub print_dl_metadata {
               . "\n";
             print $Stdout "$serovar|$asm_lvl|$acc_size|$url|$snp_cluster_id\n"
               if ( $curr_count > 0 );
-            last if ( $curr_count == $serovar_limit );
         }
-        last if ( $curr_count == $serovar_limit );
+        last if ( $curr_count >= $serovar_limit );
     }
     return $curr_count;
 }

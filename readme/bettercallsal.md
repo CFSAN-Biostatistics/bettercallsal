@@ -87,7 +87,7 @@ cpipes
       --pipeline bettercallsal \
       --input /path/to/illumina/fastq/dir \
       --output /path/to/output \
-      --bcs_root_dbdir /data/Kranti_Konganti/bettercallsal_db
+      --bcs_root_dbdir /data/Kranti_Konganti/bettercallsal_db/PDG000000002.2727
 ```
 
 \
@@ -103,7 +103,7 @@ cpipes \
       --pipeline bettercallsal \
       --input /path/to/illumina/fastq/dir \
       --output /path/to/output \
-      --bcs_root_dbdir /data/Kranti_Konganti/bettercallsal_db \
+      --bcs_root_dbdir /data/Kranti_Konganti/bettercallsal_db/PDG000000002.2727 \
       --fq_single_end false \
       --fq_suffix '_R1_001.fastq.gz'
 ```
@@ -170,7 +170,7 @@ cpipes \
     --pipeline bettercallsal \
     --input /path/to/bettercallsal_sim_reads \
     --output /path/to/bettercallsal_sim_reads_output \
-    --bcs_root_dbdir /path/to/PDG000000002.2537
+    --bcs_root_dbdir /path/to/PDG000000002.2727
     --kmaalign_ignorequals \
     --max_cpus 5 \
     -profile stdkondagac \
@@ -289,7 +289,7 @@ cpipes \
     --pipeline bettercallsal \
     --input /path/to/bettercallsal_sim_reads \
     --output /path/to/bettercallsal_sim_reads_output \
-    --bcs_root_dbdir /path/to/PDG000000002.2537
+    --bcs_root_dbdir /path/to/PDG000000002.2727
     --kmaalign_ignorequals \
     -profile stdkondagac \
     -resume
@@ -313,7 +313,7 @@ You can turn **OFF** this feature with `--sourmashsketch_run false` option.
 
 ```text
 [Kranti_Konganti@my-unix-box ]$ cpipes --pipeline bettercallsal --help
-N E X T F L O W  ~  version 22.10.7
+N E X T F L O W  ~  version 23.04.3
 Launching `./bettercallsal/cpipes` [awesome_chandrasekhar] DSL2 - revision: 8da4e11078
 ================================================================================
              (o)                  
@@ -328,7 +328,7 @@ A collection of modular pipelines at CFSAN, FDA.
 --------------------------------------------------------------------------------
 Name                            : CPIPES
 Author                          : Kranti Konganti
-Version                         : 0.6.0
+Version                         : 0.6.1
 Center                          : CFSAN, FDA.
 ================================================================================
 

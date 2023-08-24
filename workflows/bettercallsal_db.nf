@@ -58,15 +58,20 @@ workflow BETTERCALLSAL_DB {
             .versions
             .set { software_versions }
 
-        FILTER_PDG_METADATA ( DOWNLOAD_PDG_METADATA.out.accs )
+        FILTER_PDG_METADATA (
+            DOWNLOAD_PDG_METADATA.out.accs
+                .splitText(by: params.genomes_chunk.toInteger() * 10, file: true)
+        )
 
         DB_PER_COMPUTED_SEROTYPE (
-            FILTER_PDG_METADATA.out.accs_chunk_tbl,
+            FILTER_PDG_METADATA.out.accs_chunk_tbl
+                .collectFile(name: 'per_comp_db_accs.txt'),
             DOWNLOAD_PDG_METADATA.out.pdg_metadata
         )
 
         DB_PER_SNP_CLUSTER (
-            FILTER_PDG_METADATA.out.accs_chunk_tbl,
+            FILTER_PDG_METADATA.out.accs_chunk_tbl
+                .collectFile(name: 'per_snp_db_accs.txt'),
             DOWNLOAD_PDG_METADATA.out.pdg_metadata,
             DOWNLOAD_PDG_METADATA.out.snp_cluster_metadata
         )
@@ -99,6 +104,10 @@ workflow BETTERCALLSAL_DB {
 
         DB_PER_COMPUTED_SEROTYPE.out.accs_comp
             .concat( DB_PER_SNP_CLUSTER.out.accs_snp )
+            .splitText()
+            .collect()
+            .flatten()
+            .unique()
             .collectFile(name: 'accs_to_download.txt')
             .splitText(by: params.genomes_chunk, file: true)
             .set { ch_accs_to_download }

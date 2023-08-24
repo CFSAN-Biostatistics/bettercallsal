@@ -1,6 +1,6 @@
 process SCAFFOLD_GENOMES {
     tag "fasta_join.pl"
-    label "process_nano"
+    label "process_micro"
 
     module (params.enable_module ? "${params.swmodulepath}${params.fs}perl${params.fs}5.30.0" : null)
     conda (params.enable_conda ? "conda-forge::perl bioconda::perl-bioperl=1.7.8" : null)
@@ -30,6 +30,7 @@ process SCAFFOLD_GENOMES {
 
         datasets rehydrate \\
             --gzip \\
+            --max-workers $task.cpus \\
             --directory "."
 
         fasta_join.pl -in ncbi_dataset

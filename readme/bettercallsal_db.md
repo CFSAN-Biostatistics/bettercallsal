@@ -1,6 +1,6 @@
 # bettercallsal_db
 
-`bettercallsal_db` is an end-to-end automated workflow to generate and consolidate the required DB flat files based on [NCBI Pathogens Database for Salmonella](https://ftp.ncbi.nlm.nih.gov/pathogen/Results/Salmonella/). It first downloads the metadata based on the provided release identifier (Ex: `latest_snps` or `PDG000000002.2537`) and then creates a `mash sketch` based on the filtering strategy. It generates two types of sketches, one that prioritizes genome collection based on SNP clustering (`per_snp_cluster`) and the other just collects up to N number of genome accessions for each `computed_serotype` column from the metadata file (`per_computed_serotype`).
+`bettercallsal_db` is an end-to-end automated workflow to generate and consolidate the required DB flat files based on [NCBI Pathogens Database for Salmonella](https://ftp.ncbi.nlm.nih.gov/pathogen/Results/Salmonella/). It first downloads the metadata based on the provided release identifier (Ex: `latest_snps` or `PDG000000002.2727`) and then creates a `mash sketch` based on the filtering strategy. It generates two types of sketches, one that prioritizes genome collection based on SNP clustering (`per_snp_cluster`) and the other just collects up to N number of genome accessions for each `computed_serotype` column from the metadata file (`per_computed_serotype`).
 
 The `bettercallsal_db` workflow should finish within an hour with stable internet connection.
 
@@ -16,13 +16,13 @@ cpipes --pipeline bettercallsal_db [options]
 \
 &nbsp;
 
-Example: Run the `bettercallsal_db` pipeline and store output at `/data/Kranti_Konganti/bettercallsal_db`.
+Example: Run the `bettercallsal_db` pipeline and store output at `/data/Kranti_Konganti/bettercallsal_db/PDG000000002.2727`.
 
 ```bash
 cpipes
       --pipeline bettercallsal_db \
-      --pdg_release PDG000000002.2537 \
-      --output /data/Kranti_Konganti/bettercallsal_db
+      --pdg_release PDG000000002.2727 \
+      --output /data/Kranti_Konganti/bettercallsal_db/PDG000000002.2727
 ```
 
 \
@@ -35,7 +35,7 @@ cpipes
       --pipeline bettercallsal \
       --input /path/to/illumina/fastq/dir \
       --output /path/to/output \
-      --bcs_root_dbdir /data/Kranti_Konganti/bettercallsal_db
+      --bcs_root_dbdir /data/Kranti_Konganti/bettercallsal_db/PDG000000002.2727
 ```
 
 \
@@ -52,22 +52,22 @@ Please note that the last step of the `bettercallsal_db` workflow named `SCAFFOL
 
 ```text
 [Kranti_Konganti@my-unix-box ]$ cpipes --pipeline bettercallsal_db --help
-N E X T F L O W  ~  version 22.10.0
-Launching `./bettercallsal/cpipes` [hopeful_franklin] DSL2 - revision: 93f5293f50
+N E X T F L O W  ~  version 23.04.3
+Launching `./bettercallsal/cpipes` [special_brenner] DSL2 - revision: 8da4e11078
 ================================================================================
-             (o)
-  ___  _ __   _  _ __    ___  ___
+             (o)                  
+  ___  _ __   _  _ __    ___  ___ 
  / __|| '_ \ | || '_ \  / _ \/ __|
 | (__ | |_) || || |_) ||  __/\__ \
  \___|| .__/ |_|| .__/  \___||___/
-      | |       | |
+      | |       | |               
       |_|       |_|
 --------------------------------------------------------------------------------
 A collection of modular pipelines at CFSAN, FDA.
 --------------------------------------------------------------------------------
-Name                            : CPIPES
+Name                            : bettercallsal
 Author                          : Kranti Konganti
-Version                         : 0.5.0
+Version                         : 0.6.1
 Center                          : CFSAN, FDA.
 ================================================================================
 
@@ -75,16 +75,16 @@ Workflow                        : bettercallsal_db
 
 Author                          : Kranti Konganti
 
-Version                         : 0.4.0
+Version                         : 0.6.1
 
 
-Required                        :
+Required                        : 
 
 --output                        : Absolute path to directory where all the
                                   pipeline outputs should be stored. Ex: --
                                   output /path/to/output
 
-Other options                   :
+Other options                   : 
 
 --wcomp_serocol                 : Column number (non 0-based index) of the
                                   PDG metadata file by which the serotypes
@@ -230,7 +230,7 @@ Other options                   :
                                   will be skipped when sketching. Default:
                                   false
 
-Help options                    :
+Help options                    : 
 
 --help                          : Display this message.
 
