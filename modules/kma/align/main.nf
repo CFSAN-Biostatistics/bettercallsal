@@ -42,7 +42,7 @@ process KMA_ALIGN {
 
         if [ "$get_hit_accs" == "true" ]; then
             grep -v '^#' $res_dir${params.fs}${prefix}.res | \\
-                cut -f1 > $res_dir${params.fs}${prefix}_template_hits.txt
+                grep -E -o 'GC[AF]\\_[0-9]+\\.*[0-9]*' > $res_dir${params.fs}${prefix}_template_hits.txt
         fi
 
         cat <<-END_VERSIONS > versions.yml

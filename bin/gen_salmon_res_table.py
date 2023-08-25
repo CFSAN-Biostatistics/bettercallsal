@@ -114,7 +114,10 @@ def main() -> None:
     bcs_sal_yn_prefix = "bettercallsal_salyn"
     sal_y = "Detected"
     sal_n = "Not detected"
+    null_value = "NULL"
+    assm_pat = re.compile(r"GC[AF]\_[0-9]+\.*[0-9]*")
     ncbi_pathogens_base_url = "https://www.ncbi.nlm.nih.gov/pathogens/"
+    ncbi_pathogens_genome_base = "https://www.ncbi.nlm.nih.gov/datasets/genome/"
 
     sample2salmon, snp_clusters, multiqc_salmon_counts, seen_sero, sal_yn = (
         defaultdict(defaultdict),
@@ -192,7 +195,7 @@ def main() -> None:
                         + "be malformed. It contains less than required 4 columns."
                     )
                     exit(1)
-                elif cols[3] != "NULL":
+                elif cols[3] != null_value:
                     snp_clusters[cols[0]].setdefault("assembly_accs", []).append(cols[3])
                     snp_clusters[cols[3]].setdefault("snp_clust_id", []).append(cols[0])
                     snp_clusters[cols[3]].setdefault("pathdb_acc_id", []).append(cols[1])
@@ -236,6 +239,11 @@ def main() -> None:
                         continue
                     cols = line.strip().split("\t")
                     ref_acc = "_".join(cols[0].split("_")[:2])
+
+                    if ref_acc not in snp_clusters.keys():
+                        snp_clusters[ref_acc]["snp_clust_id"] = ref_acc
+                        snp_clusters[ref_acc]["pathdb_acc_id"] = ref_acc
+
                     (
                         sample2salmon[sample_name]
                         .setdefault(acc2sero[cols[0]], [])
@@ -278,8 +286,6 @@ def main() -> None:
             #     + "".join(snp_clusters[ref_acc]["snp_clust_id"])
             #     + "?accessions="
             # )
-            sample_snp_relation = ncbi_pathogens_base_url + "isolates/#"
-
             if len(salmon_res_file_failed) == 1:
                 with (open("".join(salmon_res_file_failed), "r")) as no_calls_fh:
                     for line in no_calls_fh.readlines():
@@ -317,19 +323,27 @@ def main() -> None:
                     #         ]
                     #     )
                     # )
-                    final_url_text_to_show = " ".join(
-                        sample2salmon[sample]["snp_clust_ids"][snp_clust_id]
-                    )
-                    snp_cluster_res_col.append(
-                        "".join(
-                            [
-                                f'<a href="',
-                                sample_snp_relation,
-                                final_url_text_to_show,
-                                f'" target="_blank">{final_url_text_to_show}</a>',
-                            ]
+                    # ppp.pprint(sample2salmon[sample])
+                    for pathdbacc in sample2salmon[sample]["snp_clust_ids"][snp_clust_id]:
+                        # final_url_text_to_show = " ".join(
+                        #     sample2salmon[sample]["snp_clust_ids"][snp_clust_id]
+                        # )
+                        sample_snp_relation = (
+                            ncbi_pathogens_genome_base
+                            if assm_pat.match(pathdbacc)
+                            else ncbi_pathogens_base_url + "isolates/#"
                         )
-                    )
+
+                        snp_cluster_res_col.append(
+                            "".join(
+                                [
+                                    f'<a href="',
+                                    sample_snp_relation,
+                                    pathdbacc,
+                                    f'" target="_blank">{pathdbacc}</a>',
+                                ]
+                            )
+                        )
 
                 per_serotype_counts = 0
                 for serotype in serotypes:
