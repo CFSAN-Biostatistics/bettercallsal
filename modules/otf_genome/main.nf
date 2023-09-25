@@ -1,6 +1,6 @@
 process OTF_GENOME {
     tag "$meta.id"
-    label "process_pico"
+    label "process_nano"
 
     module (params.enable_module ? "${params.swmodulepath}${params.fs}python${params.fs}3.8.1" : null)
     conda (params.enable_conda ? "conda-forge::python=3.10.4" : null)
