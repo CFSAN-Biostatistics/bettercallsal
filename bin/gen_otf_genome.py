@@ -10,18 +10,26 @@ import logging
 import os
 import pprint
 import re
+import shutil
 
 # Set logging.
 logging.basicConfig(
-    format="\n" + "=" * 55 + "\n%(asctime)s - %(levelname)s\n" + "=" * 55 + "\n%(message)s\n\n",
+    format="\n"
+    + "=" * 55
+    + "\n%(asctime)s - %(levelname)s\n"
+    + "=" * 55
+    + "\n%(message)s\n\n",
     level=logging.DEBUG,
 )
 
 # Debug print.
 ppp = pprint.PrettyPrinter(width=50, indent=4)
 
+
 # Multiple inheritence for pretty printing of help text.
-class MultiArgFormatClasses(argparse.RawTextHelpFormatter, argparse.ArgumentDefaultsHelpFormatter):
+class MultiArgFormatClasses(
+    argparse.RawTextHelpFormatter, argparse.ArgumentDefaultsHelpFormatter
+):
     pass
 
 
@@ -51,7 +59,8 @@ def main() -> None:
         dest="accs_txt",
         default=False,
         required=True,
-        help="Absolute UNIX path to .txt file containing accessions\n" + "FASTA IDs, one per line.",
+        help="Absolute UNIX path to .txt file containing accessions\n"
+        + "FASTA IDs, one per line.",
     )
     required.add_argument(
         "-gd",
@@ -106,7 +115,11 @@ def main() -> None:
     cat_reads_gz = os.path.join(os.getcwd(), out_prefix + "_aln_reads.fna.gz")
     cat_reads_gz = re.sub("__", "_", cat_reads_gz)
 
-    if accs_txt and os.path.exists(cat_genomes_gz) and os.path.getsize(cat_genomes_gz) > 0:
+    if (
+        accs_txt
+        and os.path.exists(cat_genomes_gz)
+        and os.path.getsize(cat_genomes_gz) > 0
+    ):
         logging.error(
             "A concatenated genome FASTA file,\n"
             + f"{os.path.basename(cat_genomes_gz)} already exists in:\n"
@@ -158,7 +171,10 @@ def main() -> None:
 
                     genome_file = os.path.join(genomes_dir, line + genomes_dir_suffix)
 
-                    if not os.path.exists(genome_file) or os.path.getsize(genome_file) <= 0:
+                    if (
+                        not os.path.exists(genome_file)
+                        or os.path.getsize(genome_file) <= 0
+                    ):
                         logging.error(
                             f"Genome file {os.path.basename(genome_file)} does not\n"
                             + "exits or is empty!"
@@ -171,10 +187,16 @@ def main() -> None:
             accs_txt_fh.close()
         genomes_out_gz.close()
 
-        if len(accs_seen.keys()) > 0 and os.path.exists(frags_gz) and os.path.getsize(frags_gz) > 0:
-            with gzip.open(cat_reads_gz, "wt", encoding="utf-8") as cat_reads_gz_fh:
-                with gzip.open(frags_gz, "rb") as fragz_gz_fh:
-                    for frag_line in fragz_gz_fh.readlines():
+        if (
+            len(accs_seen.keys()) > 0
+            and os.path.exists(frags_gz)
+            and os.path.getsize(frags_gz) > 0
+        ):
+            with gzip.open(
+                cat_reads_gz, "wt", encoding="utf-8", compresslevel=6
+            ) as cat_reads_gz_fh:
+                with gzip.open(frags_gz, "rb", compresslevel=6) as fragz_gz_fh:
+                    for frag_line in fragz_gz_fh:
                         frag_lines = frag_line.decode("utf-8").strip().split(frag_delim)
                         # Per KMA specification, 6=template, 7=query, 1=read
                         cat_reads_gz_fh.write(f">{frag_lines[6]}\n{frag_lines[0]}\n")
