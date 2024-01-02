@@ -1,6 +1,6 @@
 process SCAFFOLD_GENOMES {
     tag "fasta_join.pl"
-    label "process_micro"
+    label "process_nano"
 
     module (params.enable_module ? "${params.swmodulepath}${params.fs}perl${params.fs}5.30.0" : null)
     conda (params.enable_conda ? "conda-forge::perl bioconda::perl-bioperl=1.7.8" : null)

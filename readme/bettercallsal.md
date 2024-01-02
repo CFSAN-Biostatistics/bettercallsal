@@ -28,7 +28,7 @@
 
 ## Minimum Requirements
 
-1. [Nextflow version 22.10.0](https://github.com/nextflow-io/nextflow/releases/download/v22.10.0/nextflow).
+1. [Nextflow version 23.04.3](https://github.com/nextflow-io/nextflow/releases/download/v23.04.3/nextflow).
     - Make the `nextflow` binary executable (`chmod 755 nextflow`) and also make sure that it is made available in your `$PATH`.
     - If your existing `JAVA` install does not support the newest **Nextflow** version, you can try **Amazon**'s `JAVA` (OpenJDK):  [Corretto](https://corretto.aws/downloads/latest/amazon-corretto-17-x64-linux-jdk.tar.gz).
 2. Either of `micromamba` (version `1.0.0`) or `docker` or `singularity` installed and made available in your `$PATH`.
@@ -87,7 +87,7 @@ cpipes
       --pipeline bettercallsal \
       --input /path/to/illumina/fastq/dir \
       --output /path/to/output \
-      --bcs_root_dbdir /data/Kranti_Konganti/bettercallsal_db/PDG000000002.2727
+      --bcs_root_dbdir /data/Kranti_Konganti/bettercallsal_db/PDG000000002.2876
 ```
 
 \
@@ -103,7 +103,7 @@ cpipes \
       --pipeline bettercallsal \
       --input /path/to/illumina/fastq/dir \
       --output /path/to/output \
-      --bcs_root_dbdir /data/Kranti_Konganti/bettercallsal_db/PDG000000002.2727 \
+      --bcs_root_dbdir /data/Kranti_Konganti/bettercallsal_db/PDG000000002.2876 \
       --fq_single_end false \
       --fq_suffix '_R1_001.fastq.gz'
 ```
@@ -170,7 +170,7 @@ cpipes \
     --pipeline bettercallsal \
     --input /path/to/bettercallsal_sim_reads \
     --output /path/to/bettercallsal_sim_reads_output \
-    --bcs_root_dbdir /path/to/PDG000000002.2727
+    --bcs_root_dbdir /path/to/PDG000000002.2876
     --kmaalign_ignorequals \
     --max_cpus 5 \
     -profile stdkondagac \
@@ -271,7 +271,7 @@ After you make sure that you have all the [minimum requirements](#minimum-requir
 
 - Download simulated reads: [S3](https://cfsan-pub-xfer.s3.amazonaws.com/Kranti.Konganti/bettercallsal/bettercallsal_sim_reads.tar.bz2) (~ 3 GB).
 - Download pre-formatted test database: [S3](https://cfsan-pub-xfer.s3.amazonaws.com/Kranti.Konganti/bettercallsal/PDG000000002.2491.test-db.tar.bz2) (~ 75 MB). This test database works only with the simulated reads.
-- Download pre-formatted full database (**Optional**): If you would like to do a complete run with your own **FASTQ** datasets, you can either create your own [database](./bettercallsal_db.md) or use [PDG000000002.2537](https://cfsan-pub-xfer.s3.amazonaws.com/Kranti.Konganti/bettercallsal/PDG000000002.2537.tar.bz2) version of the database (~ 37 GB).
+- Download pre-formatted full database (**Optional**): If you would like to do a complete run with your own **FASTQ** datasets, you can either create your own [database](./bettercallsal_db.md) or use [PDG000000002.2727](https://cfsan-pub-xfer.s3.amazonaws.com/Kranti.Konganti/bettercallsal/PDG000000002.2727.tar.bz2) version of the database (~ 42 GB).
 - After succesful run of the workflow, your **MultiQC** report should look something like [this](https://cfsan-pub-xfer.s3.amazonaws.com/Kranti.Konganti/bettercallsal/bettercallsal_sim_reads_mqc.html).
 - It is always a best practice to use absolute UNIX paths and real destinations of symbolic links during pipeline execution. For example, find out the real path(s) of your absolute UNIX path(s) and use that for the `--input` and `--output` options of the pipeline.
 
@@ -289,7 +289,7 @@ cpipes \
     --pipeline bettercallsal \
     --input /path/to/bettercallsal_sim_reads \
     --output /path/to/bettercallsal_sim_reads_output \
-    --bcs_root_dbdir /path/to/PDG000000002.2727
+    --bcs_root_dbdir /path/to/PDG000000002.2876
     --kmaalign_ignorequals \
     -profile stdkondagac \
     -resume
@@ -326,9 +326,9 @@ Launching `./bettercallsal/cpipes` [awesome_chandrasekhar] DSL2 - revision: 8da4
 --------------------------------------------------------------------------------
 A collection of modular pipelines at CFSAN, FDA.
 --------------------------------------------------------------------------------
-Name                            : CPIPES
+Name                            : bettercallsal
 Author                          : Kranti Konganti
-Version                         : 0.6.1
+Version                         : 0.7.0
 Center                          : CFSAN, FDA.
 ================================================================================
 

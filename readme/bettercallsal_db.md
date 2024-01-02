@@ -1,6 +1,6 @@
 # bettercallsal_db
 
-`bettercallsal_db` is an end-to-end automated workflow to generate and consolidate the required DB flat files based on [NCBI Pathogens Database for Salmonella](https://ftp.ncbi.nlm.nih.gov/pathogen/Results/Salmonella/). It first downloads the metadata based on the provided release identifier (Ex: `latest_snps` or `PDG000000002.2727`) and then creates a `mash sketch` based on the filtering strategy. It generates two types of sketches, one that prioritizes genome collection based on SNP clustering (`per_snp_cluster`) and the other just collects up to N number of genome accessions for each `computed_serotype` column from the metadata file (`per_computed_serotype`).
+`bettercallsal_db` is an end-to-end automated workflow to generate and consolidate the required DB flat files based on [NCBI Pathogens Database for Salmonella](https://ftp.ncbi.nlm.nih.gov/pathogen/Results/Salmonella/). It first downloads the metadata based on the provided release identifier (Ex: `latest_snps` or `PDG000000002.2876`) and then creates a `mash sketch` based on the filtering strategy. It generates two types of sketches, one that prioritizes genome collection based on SNP clustering (`per_snp_cluster`) and the other just collects up to N number of genome accessions for each `computed_serotype` column from the metadata file (`per_computed_serotype`).
 
 The `bettercallsal_db` workflow should finish within an hour with stable internet connection.
 
@@ -16,13 +16,13 @@ cpipes --pipeline bettercallsal_db [options]
 \
 &nbsp;
 
-Example: Run the `bettercallsal_db` pipeline and store output at `/data/Kranti_Konganti/bettercallsal_db/PDG000000002.2727`.
+Example: Run the `bettercallsal_db` pipeline and store output at `/data/Kranti_Konganti/bettercallsal_db/PDG000000002.2876`.
 
 ```bash
 cpipes
       --pipeline bettercallsal_db \
-      --pdg_release PDG000000002.2727 \
-      --output /data/Kranti_Konganti/bettercallsal_db/PDG000000002.2727
+      --pdg_release PDG000000002.2876 \
+      --output /data/Kranti_Konganti/bettercallsal_db/PDG000000002.2876
 ```
 
 \
@@ -35,7 +35,7 @@ cpipes
       --pipeline bettercallsal \
       --input /path/to/illumina/fastq/dir \
       --output /path/to/output \
-      --bcs_root_dbdir /data/Kranti_Konganti/bettercallsal_db/PDG000000002.2727
+      --bcs_root_dbdir /data/Kranti_Konganti/bettercallsal_db/PDG000000002.2876
 ```
 
 \
@@ -67,7 +67,7 @@ A collection of modular pipelines at CFSAN, FDA.
 --------------------------------------------------------------------------------
 Name                            : bettercallsal
 Author                          : Kranti Konganti
-Version                         : 0.6.1
+Version                         : 0.7.0
 Center                          : CFSAN, FDA.
 ================================================================================
 
@@ -75,7 +75,7 @@ Workflow                        : bettercallsal_db
 
 Author                          : Kranti Konganti
 
-Version                         : 0.6.1
+Version                         : 0.7.0
 
 
 Required                        : 
@@ -89,6 +89,18 @@ Other options                   :
 --wcomp_serocol                 : Column number (non 0-based index) of the
                                   PDG metadata file by which the serotypes
                                   are collected. Default: false
+
+--wcomp_seronamecol             : Column number (non 0-based index) of the
+                                  PDG metadata file whose column name is "
+                                  serovar".  Default: false
+
+--wcomp_acc_col                 : Column number (non 0-based index) of the
+                                  PDG metadata file whose column name is "acc
+                                  ".  Default: false
+
+--wcomp_target_acc_col          : Column number (non 0-based index) of the
+                                  PDG metadata file whose column name is "
+                                  target_acc".  Default: false
 
 --wcomp_complete_sero           : Skip indexing serotypes when the serotype
                                   name in the column number 49 (non 0-based)
@@ -119,6 +131,18 @@ Other options                   :
 --wsnp_serocol                  : Column number (non 0-based index) of the
                                   PDG metadata file by which the serotypes
                                   are collected. Default: false
+
+--wsnp_seronamecol              : Column number (non 0-based index) of the
+                                  PDG metadata file whose column name is "
+                                  serovar".  Default: false
+
+--wsnp_acc_col                  : Column number (non 0-based index) of the
+                                  PDG metadata file whose column name is "acc
+                                  ".  Default: false
+
+--wsnp_target_acc_col           : Column number (non 0-based index) of the
+                                  PDG metadata file whose column name is "
+                                  target_acc".  Default: false
 
 --wsnp_complete_sero            : Skip indexing serotypes when the serotype
                                   name in the column number 49 (non 0-based)

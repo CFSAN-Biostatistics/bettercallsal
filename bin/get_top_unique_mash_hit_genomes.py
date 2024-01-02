@@ -2,15 +2,17 @@
 
 # Kranti Konganti
 
-import os
-import glob
-import pickle
 import argparse
+import glob
 import inspect
 import logging
-import re
+import os
+import pickle
 import pprint
+import re
+import subprocess
 from collections import defaultdict
+
 
 # Multiple inheritence for pretty printing of help text.
 class MultiArgFormatClasses(argparse.RawTextHelpFormatter, argparse.ArgumentDefaultsHelpFormatter):
@@ -20,17 +22,24 @@ class MultiArgFormatClasses(argparse.RawTextHelpFormatter, argparse.ArgumentDefa
 # Main
 def main() -> None:
     """
-    This script works only in the context of `bettercallsal` Nextflow workflow.
+    This script works only in the context of a Nextflow workflow.
     It takes:
         1. A pickle file containing a dictionary object where genome accession
             is the key and the computed serotype is the value.
-        2. A file with `mash screen` results run against the Salmonella SNP
-            Cluster genomes' sketch.
+                        OR
+        1. It takes a pickle file containing a nested dictionary, where genome accession
+            is the key and the metadata is a dictionary associated with that key.
+        2. A file with `mash screen` results.
         3. A directory containing genomes' FASTA in gzipped format where the
             FASTA file contains 2 lines: one FASTA header followed by
             genome Sequence.
     and then generates a concatenated FASTA file of top N unique `mash screen`
     genome hits as requested.
+
+    In addition:
+        1. User can skip `mash screen` hits that originate from the supplied
+            bio project accessions.
+            For -skip option to work, ncbi-datasets should be available in $PATH.
     """
 
     # Set logging.
@@ -109,12 +118,22 @@ def main() -> None:
         "-n",
         dest="num_uniq_hits",
         default=10,
-        help="This many number of serotype genomes' accessions are " + "\nreturned.",
+        required=False,
+        help="This many number of serotype genomes' accessions are returned.",
+    )
+    parser.add_argument(
+        "-skip",
+        dest="skip_accs",
+        default=str(""),
+        required=False,
+        help="Skip all hits which belong to the following bioproject accession(s).\n"
+        + "A comma separated list of more than one bioproject.",
     )
     parser.add_argument(
         "-op",
         dest="out_prefix",
         default="MASH_SCREEN",
+        required=False,
         help="Set the output file prefix for .fna.gz and .txt files.",
     )
     # required = parser.add_argument_group('required arguments')
@@ -129,11 +148,33 @@ def main() -> None:
     genomes_dir = args.genomes_dir
     genomes_dir_suffix = args.genomes_dir_suffix
     out_prefix = args.out_prefix
+    skip_accs = args.skip_accs
+    skip_accs_list = list()
+    skip_check = re.compile(r"PRJNA\d+(?:\,PRJNA\d+){0,1}")
+    req_metadata = {
+        "mlst_sequence_type": "ST",
+        "epi_type": "ET",
+        "host": "HO",
+        "host_disease": "HD",
+        "isolation_source": "IS",
+        "outbreak": "OU",
+        "source_type": "SOT",
+        "strain": "GS",
+    }
+    target_acc_key = "target_acc"
+    ncbi_path_heading = "NCBI Pathogen Isolates Browser"
+    ncbi_path_uri = "https://www.ncbi.nlm.nih.gov/pathogens/isolates/#"
     mash_genomes_gz = os.path.join(
         os.getcwd(), out_prefix + "_TOP_" + str(num_uniq_hits) + "_UNIQUE_HITS.fna.gz"
     )
     mash_uniq_hits_txt = os.path.join(
         os.getcwd(), re.sub(".fna.gz", ".txt", os.path.basename(mash_genomes_gz))
+    )
+    mash_uniq_accs_txt = os.path.join(
+        os.getcwd(), re.sub(".fna.gz", "_ACCS.txt", os.path.basename(mash_genomes_gz))
+    )
+    mash_popup_info_txt = os.path.join(
+        os.getcwd(), re.sub(".fna.gz", "_POPUP.txt", os.path.basename(mash_genomes_gz))
     )
 
     if mash_screen_res and os.path.exists(mash_genomes_gz):
@@ -152,6 +193,36 @@ def main() -> None:
     if mash_screen_res and (not genomes_dir or not pickled_sero):
         logging.error("When -m is on, -ps and -gd are also required.")
         exit(1)
+
+    if skip_accs and not skip_check.match(skip_accs):
+        logging.error(
+            "Supplied bio project accessions are not valid!\n"
+            + "Valid options:\n\t-skip PRJNA766315\n\t-skip PRJNA766315,PRJNA675435"
+        )
+        exit(1)
+    elif skip_check.match(skip_accs):
+        datasets_cmd = "datasets summary genome accession --as-json-lines --report ids_only".split()
+        datasets_cmd.append(skip_accs)
+        dataformat_cmd = "dataformat tsv genome --fields accession --elide-header".split()
+        try:
+            accs_query = subprocess.run(datasets_cmd, capture_output=True, check=True)
+            try:
+                skip_accs_list = (
+                    subprocess.check_output(dataformat_cmd, input=accs_query.stdout)
+                    .decode("utf-8")
+                    .split("\n")
+                )
+            except subprocess.CalledProcessError as e:
+                logging.error(f"Query failed\n\t{dataformat_cmd.join(' ')}\nError:\n\t{e}")
+                exit(1)
+        except subprocess.CalledProcessError as e:
+            logging.error(f"Query failed\n\t{datasets_cmd.join(' ')}\nError:\n\t{e}")
+            exit(1)
+
+        if len(skip_accs_list) > 0:
+            filter_these_hits = list(filter(bool, skip_accs_list))
+        else:
+            filter_these_hits = list()
 
     if genomes_dir:
         if not os.path.isdir(genomes_dir):
@@ -218,7 +289,6 @@ def main() -> None:
         write_pickled_sero.close()
         exit(0)
     elif pickle_sero and not (os.path.exists(pickle_sero) and os.path.getsize(pickle_sero) > 0):
-
         logging.error(
             "Requested to create pickle from metadata, but\n"
             + f"the file, {os.path.basename(pickle_sero)} is empty or\ndoes not exist!"
@@ -227,7 +297,6 @@ def main() -> None:
 
     if mash_screen_res and os.path.exists(mash_screen_res):
         if os.path.getsize(mash_screen_res) > 0:
-
             seen_uniq_hits = 0
             unpickled_acc2serotype = pickle.load(file=open(pickled_sero, "rb"))
 
@@ -271,25 +340,84 @@ def main() -> None:
 
         # ppp.pprint(mash_hits)
         msh_out_txt = open(mash_uniq_hits_txt, "w")
+        wrote_header_pop = False
+        wrote_header_acc = False
+
         with open(mash_genomes_gz, "wb") as msh_out_gz:
             for _, (ident, acc_list) in enumerate(sorted(mash_hits.items(), reverse=True)):
                 for acc in acc_list:
+                    if len(filter_these_hits) > 0 and acc in filter_these_hits:
+                        continue
                     if seen_uniq_hits >= num_uniq_hits:
                         break
-                    if unpickled_acc2serotype[acc] not in seen_mash_sero.keys():
-                        seen_mash_sero[unpickled_acc2serotype[acc]] = 1
-                        seen_uniq_hits += 1
-                        # print(acc.strip() + '\t' + ident + '\t' + unpickled_acc2serotype[acc], file=sys.stdout)
-                        msh_out_txt.write(
-                            f"{acc.strip()}\t{unpickled_acc2serotype[acc]}\t{ident}\n"
+                    if isinstance(unpickled_acc2serotype[acc], dict):
+                        if target_acc_key in unpickled_acc2serotype[acc].keys():
+                            if not wrote_header_pop:
+                                mash_out_pop_txt = open(mash_popup_info_txt, "w")
+                                mash_out_pop_txt.write("POPUP_INFO\nSEPARATOR COMMA\nDATA\n")
+                                wrote_header_pop = True
+
+                            pdt = "".join(unpickled_acc2serotype[acc][target_acc_key])
+
+                            popup_line = ",".join(
+                                [
+                                    acc,
+                                    ncbi_path_heading,
+                                    f'<a target="_blank" href="{ncbi_path_uri + pdt}">{pdt}</a>',
+                                ]
+                            )
+                            mash_out_pop_txt.write(popup_line + "\n")
+
+                        if all(
+                            k in unpickled_acc2serotype[acc].keys() for k in req_metadata.keys()
+                        ):
+                            if not wrote_header_acc:
+                                msh_out_accs_txt = open(mash_uniq_accs_txt, "w")
+                                msh_out_txt.write("METADATA\nSEPARATOR COMMA\nFIELD_LABELS,")
+                                msh_out_txt.write(
+                                    f"{','.join([str(key).upper() for key in req_metadata.keys()])}\nDATA\n"
+                                )
+                                wrote_header_acc = True
+
+                            metadata_line = ",".join(
+                                [
+                                    re.sub(
+                                        ",",
+                                        "",
+                                        "|".join(unpickled_acc2serotype[acc][m]),
+                                    )
+                                    for m in req_metadata.keys()
+                                ],
+                            )
+
+                        msh_out_txt.write(f"{acc.strip()},{metadata_line}\n")
+                        msh_out_accs_txt.write(
+                            f"{os.path.join(genomes_dir, acc + genomes_dir_suffix)}\n"
                         )
-                        with open(
-                            os.path.join(genomes_dir, acc + genomes_dir_suffix), "rb"
-                        ) as msh_in_gz:
-                            msh_out_gz.writelines(msh_in_gz.readlines())
-                        msh_in_gz.close()
+                        seen_mash_sero[acc] = 1
+                        seen_uniq_hits += 1
+                    elif not isinstance(unpickled_acc2serotype[acc], dict):
+                        if unpickled_acc2serotype[acc] not in seen_mash_sero.keys():
+                            seen_mash_sero[unpickled_acc2serotype[acc]] = 1
+                            seen_uniq_hits += 1
+                            # print(acc.strip() + '\t' + ident + '\t' + unpickled_acc2serotype[acc], file=sys.stdout)
+                            msh_out_txt.write(
+                                f"{acc.strip()}\t{unpickled_acc2serotype[acc]}\t{ident}\n"
+                            )
+                            with open(
+                                os.path.join(genomes_dir, acc + genomes_dir_suffix),
+                                "rb",
+                            ) as msh_in_gz:
+                                msh_out_gz.writelines(msh_in_gz.readlines())
+                            msh_in_gz.close()
         msh_out_gz.close()
         msh_out_txt.close()
+
+        if "msh_out_accs_txt" in locals().keys() and not msh_out_accs_txt.closed:
+            msh_out_accs_txt.close()
+        if "mash_out_pop_txt" in locals().keys() and not mash_out_pop_txt.closed:
+            mash_out_pop_txt.close()
+
         logging.info(
             f"File {os.path.basename(mash_genomes_gz)}\n"
             + f"written in:\n{os.getcwd()}\nDone! Bye!"

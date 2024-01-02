@@ -59,6 +59,13 @@ def tuspyHelp(params) {
                 " Default: ${params.tuspy_n}",
             cliflag: '-n',
             clivalue: (params.tuspy_n ?: '')
+        ],
+        'tuspy_skip': [
+            clihelp: 'Skip all hits which belong to the following bioproject ' +
+                'accession(s). A comma separated list of more than one bioproject. ' +
+                " Default: ${params.tuspy_skip}",
+            cliflag: '-skip',
+            clivalue: (params.tuspy_skip ?: '')
         ]
     ]
 

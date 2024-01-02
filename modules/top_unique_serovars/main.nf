@@ -12,10 +12,12 @@ process TOP_UNIQUE_SEROVARS {
         tuple val(meta), path(mash_screen_res)
 
     output:
-        tuple val(meta), path('*_UNIQUE_HITS.txt')   , emit: tsv, optional: true
-        tuple val(meta), path('*_UNIQUE_HITS.fna.gz'), emit: genomes_fasta, optional: true
-        path'*FAILED.txt'                            , emit: failed, optional: true
-        path 'versions.yml'                          , emit: versions
+        tuple val(meta), path('*_UNIQUE_HITS.txt')      , emit: tsv, optional: true
+        tuple val(meta), path('*_UNIQUE_HITS_POPUP.txt'), emit: popup, optional: true
+        tuple val(meta), path('*_UNIQUE_HITS_ACCS.txt') , emit: accessions, optional: true
+        tuple val(meta), path('*_UNIQUE_HITS.fna.gz')   , emit: genomes_fasta, optional: true
+        path'*FAILED.txt'                               , emit: failed, optional: true
+        path 'versions.yml'                             , emit: versions
 
     when:
         task.ext.when == null || task.ext.when
@@ -32,6 +34,8 @@ process TOP_UNIQUE_SEROVARS {
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":
             python: \$( python --version | sed 's/Python //g' )
+            datasets: \$( datasets --version | sed 's/datasets version: //g' )
+            dataformat: \$( dataformat version )
         END_VERSIONS
         """
 

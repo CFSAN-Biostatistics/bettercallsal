@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 
 # Kranti Konganti
-# 09/14/2022
+# 01/02/2024
 
 use strict;
 use warnings;
@@ -20,6 +20,7 @@ my (
     $serovar_limit,          $serovar_or_type_col, $min_asm_size,
     $complete_serotype_name, $PDG_file,            $table_file,
     $not_null_pdg_serovar,   $help,                $out_prefix,
+    $acc_col,                $seronamecol,         $target_acc_col,
     @custom_serovars
 );
 
@@ -30,6 +31,9 @@ GetOptions(
     'min_contig_size=i'            => \$min_asm_size,
     'complete_serotype_name'       => \$complete_serotype_name,
     'serotype_col:i'               => \$serovar_or_type_col,
+    'seronamecol:i'                => \$seronamecol,
+    'target_acc_col:i'             => \$target_acc_col,
+    'acc_col:i'                    => \$acc_col,
     'not_null_pdg_serovar'         => \$not_null_pdg_serovar,
     'num_serotypes_per_serotype:i' => \$serovar_limit,
     'include_serovar=s'            => \@custom_serovars,
@@ -41,7 +45,19 @@ if ( !defined $serovar_limit ) {
 }
 
 if ( !defined $serovar_or_type_col ) {
-    $serovar_or_type_col = 49;
+    $serovar_or_type_col = 50;
+}
+
+if ( !defined $seronamecol ) {
+    $seronamecol = 34;
+}
+
+if ( !defined $target_acc_col ) {
+    $target_acc_col = 43;
+}
+
+if ( !defined $acc_col ) {
+    $acc_col = 10;
 }
 
 if ( !defined $min_asm_size ) {
@@ -77,15 +93,15 @@ while ( my $line = <$pdg_file> ) {
     next if ( $line =~ m/^\#/ );
 
     # Relevent columns (Perl index):
-    #  9: asm_acc
-    # 33: serovar
-    # 48: computed serotype
+    #   10-1 = 9: asm_acc
+    # 34 -1 = 33: serovar
+    # 50 -1 = 49: computed serotype
 
     my @cols            = split( /\t/, $line );
     my $serovar_or_type = $cols[ $serovar_or_type_col - 1 ];
-    my $acc             = $cols[9];
-    my $serovar         = $cols[33];
-    my $target_acc      = $cols[41];
+    my $acc             = $cols[ $acc_col - 1 ];
+    my $serovar         = $cols[ $seronamecol - 1 ];
+    my $target_acc      = $cols[ $target_acc_col - 1 ];
 
     $serovar_or_type =~ s/\"//g;
 
@@ -318,7 +334,23 @@ file.
 =item --serocol <int> (Optional)
 
 Column number (non 0-based index) of the PDG metadata file
-by which the serotypes are collected. Default: 49
+by which the serotypes are collected
+(column name: "computed_types"). Default: 50
+
+=item --seronamecol <int> (Optional)
+
+Column number (non 0-based index) of the PDG metadata file
+whose column name is "serovar". Default: 34
+
+=item --acc_col <int> (Optional)
+
+Column number (non 0-based index) of the PDG metadata file
+whose column name is "acc". Default: 10
+
+=item --target_acc_col <int> (Optional)
+
+Column number (non 0-based index) of the PDG metadata file
+whose column name is "target_acc". Default: 43
 
 =item --complete_serotype_name (Optional)
 

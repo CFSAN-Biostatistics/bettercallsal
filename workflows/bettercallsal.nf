@@ -394,18 +394,21 @@ workflow BETTERCALLSAL {
                 .collectFile(name: 'collected_versions.yml')
         )
 
-        DUMP_SOFTWARE_VERSIONS
-            .out
-            .mqc_yml
-            .concat (
-                ch_multiqc,
-                BCS_RESULTS.out.mqc_yml,
-                BCS_RESULTS.out.mqc_json
-            )
-            .collect()
-            .set { ch_multiqc }
+        if (params.multiqc_run) {
+            DUMP_SOFTWARE_VERSIONS
+                .out
+                .mqc_yml
+                .concat (
+                    ch_multiqc,
+                    BCS_RESULTS.out.mqc_yml,
+                    BCS_RESULTS.out.mqc_json
+                )
+                .collect()
+                .set { ch_multiqc }
 
-        MULTIQC ( ch_multiqc )
+            MULTIQC ( ch_multiqc )
+        }
+
 }
 
 /*

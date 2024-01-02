@@ -15,6 +15,27 @@ def wsnpHelp(params) {
             cliflag: '--serocol',
             clivalue: (params.wsnp_serocol ?: '')
         ],
+        'wsnp_seronamecol': [
+            clihelp: 'Column number (non 0-based index) of the PDG metadata file whose column ' +
+                'name is "serovar". ' +
+                " Default: ${params.wsnp_seronamecol}",
+            cliflag: '--seronamecol',
+            clivalue: (params.wsnp_seronamecol ?: '')
+        ],
+        'wsnp_acc_col': [
+            clihelp: 'Column number (non 0-based index) of the PDG metadata file whose column ' +
+                'name is "acc". ' +
+                " Default: ${params.wsnp_seronamecol}",
+            cliflag: '--acc_col',
+            clivalue: (params.wsnp_acc_col ?: '')
+        ],
+        'wsnp_target_acc_col': [
+            clihelp: 'Column number (non 0-based index) of the PDG metadata file whose column ' +
+                'name is "target_acc". ' +
+                " Default: ${params.wsnp_seronamecol}",
+            cliflag: '--target_acc_col',
+            clivalue: (params.wsnp_target_acc_col ?: '')
+        ],
         'wsnp_complete_sero': [
             clihelp: 'Skip indexing serotypes when the serotype name in the column ' +
                 'number 49 (non 0-based) of PDG metadata file consists a "-". For example, if ' +

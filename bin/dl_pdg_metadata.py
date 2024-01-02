@@ -2,15 +2,16 @@
 
 # Kranti Konganti
 
-import os
-import shutil
-import tempfile
 import argparse
 import inspect
 import logging
+import os
 import re
-from urllib.request import urlopen
+import shutil
+import ssl
+import tempfile
 from html.parser import HTMLParser
+from urllib.request import urlopen
 
 # Set logging.f
 logging.basicConfig(
@@ -41,6 +42,10 @@ def dl_pdg(**kwargs) -> None:
     """
     db_path, url, regex, suffix, overwrite, release = [kwargs[k] for k in kwargs.keys()]
 
+    contxt = ssl.create_default_context()
+    contxt.check_hostname = False
+    contxt.verify_mode = ssl.CERT_NONE
+
     if (db_path or url) == None:
         logging.error("Please provide absolute UNIX path\n" + "to store the result DB flat files.")
         exit(1)
@@ -51,7 +56,7 @@ def dl_pdg(**kwargs) -> None:
     html_parser = NCBIPathogensHTMLParser()
     logging.info(f"Finding latest NCBI PDG release at:\n{url}")
 
-    with urlopen(url) as response:
+    with urlopen(url, context=contxt) as response:
         with tempfile.NamedTemporaryFile(delete=False) as tmp_html_file:
             shutil.copyfileobj(response, tmp_html_file)
 
@@ -86,7 +91,7 @@ def dl_pdg(**kwargs) -> None:
     tsv_at = os.path.join(dest_dir, pdg_filename)
     logging.info(f"Saving to:\n{tsv_at}")
 
-    with urlopen(pdg_metadata_url) as response:
+    with urlopen(pdg_metadata_url, context=contxt) as response:
         with open(tsv_at, "w") as tsv:
             tsv.writelines(response.read().decode("utf-8"))
 

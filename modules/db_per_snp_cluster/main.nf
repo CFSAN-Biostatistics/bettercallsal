@@ -29,7 +29,7 @@ process DB_PER_SNP_CLUSTER {
         """
         waterfall_per_snp_cluster.pl \\
             -p $pdg_metadata \\
-            -t $accs_tbl \\
+            -tb $accs_tbl \\
             -snp $snp_cluster_metadata \\
             $args \\
             1> asm_chunk_snp.tbl 2> asm_chunk_snp_counts.tbl

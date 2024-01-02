@@ -28,7 +28,7 @@ process DB_PER_COMPUTED_SEROTYPE {
         """
         waterfall_per_computed_serotype.pl \\
             -p $pdg_metadata \\
-            -t $accs_tbl \\
+            -tb $accs_tbl \\
             $args \\
             1> asm_chunk_comp.tbl 2> asm_chunk_comp_counts.tbl
 

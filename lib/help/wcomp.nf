@@ -15,6 +15,27 @@ def wcompHelp(params) {
             cliflag: '--serocol',
             clivalue: (params.wcomp_serocol ?: '')
         ],
+        'wcomp_seronamecol': [
+            clihelp: 'Column number (non 0-based index) of the PDG metadata file whose column ' +
+                'name is "serovar". ' +
+                " Default: ${params.wcomp_seronamecol}",
+            cliflag: '--seronamecol',
+            clivalue: (params.wcomp_seronamecol ?: '')
+        ],
+        'wcomp_acc_col': [
+            clihelp: 'Column number (non 0-based index) of the PDG metadata file whose column ' +
+                'name is "acc". ' +
+                " Default: ${params.wcomp_seronamecol}",
+            cliflag: '--acc_col',
+            clivalue: (params.wcomp_acc_col ?: '')
+        ],
+        'wcomp_target_acc_col': [
+            clihelp: 'Column number (non 0-based index) of the PDG metadata file whose column ' +
+                'name is "target_acc". ' +
+                " Default: ${params.wcomp_seronamecol}",
+            cliflag: '--target_acc_col',
+            clivalue: (params.wcomp_target_acc_col ?: '')
+        ],
         'wcomp_complete_sero': [
             clihelp: 'Skip indexing serotypes when the serotype name in the column ' +
                 'number 49 (non 0-based) of PDG metadata file consists a "-". For example, if ' +
