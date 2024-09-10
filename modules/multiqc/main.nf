@@ -2,11 +2,11 @@ process MULTIQC {
     label 'process_micro'
     tag 'MultiQC'
 
-    module (params.enable_module ? "${params.swmodulepath}${params.fs}multiqc${params.fs}1.14" : null)
-    conda (params.enable_conda ? 'bioconda::multiqc=1.14 conda-forge::spectra conda-forge::lzstring' : null)
+    module (params.enable_module ? "${params.swmodulepath}${params.fs}multiqc${params.fs}1.19" : null)
+    conda (params.enable_conda ? 'conda-forge::python=3.11 conda-forge::spectra conda-forge::lzstring conda-forge::imp bioconda::multiqc=1.19' : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/multiqc:1.14--pyhdfd78af_0' :
-        'quay.io/biocontainers/multiqc:1.14--pyhdfd78af_0' }"
+        'https://depot.galaxyproject.org/singularity/multiqc:1.19--pyhdfd78af_0' :
+        'quay.io/biocontainers/multiqc:1.19--pyhdfd78af_0' }"
 
     input:
     path multiqc_files
@@ -26,8 +26,12 @@ process MULTIQC {
     """
     cp ${params.projectconf}${params.fs}multiqc${params.fs}${params.pipeline}_mqc.yml cpipes_mqc_config.yml
     sed -i -e 's/Workflow_Name_Placeholder/${params.pipeline}/g; s/Workflow_Version_Placeholder/${params.workflow_version}/g' cpipes_mqc_config.yml
-    sed -i -e 's/CPIPES_Version_Placeholder/${workflow.manifest.version}/g; s%Workflow_Output_Placeholder%${params.output}%g' cpipes_mqc_config.yml
-    sed -i -e 's%Workflow_Input_Placeholder%${params.input}%g' cpipes_mqc_config.yml
+    sed -i -e 's/CPIPES_Version_Placeholder/${workflow.manifest.version}/g; s|Workflow_Output_Placeholder|${params.output}|g' cpipes_mqc_config.yml
+    sed -i -e 's|Workflow_Input_Placeholder|${params.input}|g' cpipes_mqc_config.yml
+
+    if [ -n "\$(ls *filtlong.log 2> /dev/null)" ]; then
+        sed -i -e 's%,%%g' *filtlong.log
+    fi
 
     multiqc --interactive -c cpipes_mqc_config.yml -f $args .
 

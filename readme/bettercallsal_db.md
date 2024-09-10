@@ -1,6 +1,6 @@
 # bettercallsal_db
 
-`bettercallsal_db` is an end-to-end automated workflow to generate and consolidate the required DB flat files based on [NCBI Pathogens Database for Salmonella](https://ftp.ncbi.nlm.nih.gov/pathogen/Results/Salmonella/). It first downloads the metadata based on the provided release identifier (Ex: `latest_snps` or `PDG000000002.2876`) and then creates a `mash sketch` based on the filtering strategy. It generates two types of sketches, one that prioritizes genome collection based on SNP clustering (`per_snp_cluster`) and the other just collects up to N number of genome accessions for each `computed_serotype` column from the metadata file (`per_computed_serotype`).
+`bettercallsal_db` is an end-to-end automated workflow to generate and consolidate the required DB flat files based on [NCBI Pathogens Database for Salmonella](https://ftp.ncbi.nlm.nih.gov/pathogen/Results/Salmonella/). It first downloads the metadata based on the provided release identifier (Ex: `latest_snps` or `PDG000000002.3082`) and then creates a `mash sketch` based on the filtering strategy. It generates two types of sketches, one that prioritizes genome collection based on SNP clustering (`per_snp_cluster`) and the other just collects up to N number of genome accessions for each `computed_serotype` column from the metadata file (`per_computed_serotype`).
 
 The `bettercallsal_db` workflow should finish within an hour with stable internet connection.
 
@@ -16,13 +16,13 @@ cpipes --pipeline bettercallsal_db [options]
 \
 &nbsp;
 
-Example: Run the `bettercallsal_db` pipeline and store output at `/data/Kranti_Konganti/bettercallsal_db/PDG000000002.2876`.
+Example: Run the `bettercallsal_db` pipeline and store output at `/data/Kranti_Konganti/bettercallsal_db/PDG000000002.3082`.
 
 ```bash
 cpipes
       --pipeline bettercallsal_db \
-      --pdg_release PDG000000002.2876 \
-      --output /data/Kranti_Konganti/bettercallsal_db/PDG000000002.2876
+      --pdg_release PDG000000002.3082 \
+      --output /data/Kranti_Konganti/bettercallsal_db/PDG000000002.3082
 ```
 
 \
@@ -35,7 +35,7 @@ cpipes
       --pipeline bettercallsal \
       --input /path/to/illumina/fastq/dir \
       --output /path/to/output \
-      --bcs_root_dbdir /data/Kranti_Konganti/bettercallsal_db/PDG000000002.2876
+      --bcs_root_dbdir /data/Kranti_Konganti/bettercallsal_db/PDG000000002.3082
 ```
 
 \
@@ -52,8 +52,11 @@ Please note that the last step of the `bettercallsal_db` workflow named `SCAFFOL
 
 ```text
 [Kranti_Konganti@my-unix-box ]$ cpipes --pipeline bettercallsal_db --help
-N E X T F L O W  ~  version 23.04.3
-Launching `./bettercallsal/cpipes` [special_brenner] DSL2 - revision: 8da4e11078
+
+ N E X T F L O W   ~  version 24.04.3
+
+Launching `~/apps/bettercallsal/1.0.0/cpipes` [shrivelled_hamilton] DSL2 - revision: d9b4be42be
+
 ================================================================================
              (o)                  
   ___  _ __   _  _ __    ___  ___ 
@@ -67,7 +70,7 @@ A collection of modular pipelines at CFSAN, FDA.
 --------------------------------------------------------------------------------
 Name                            : bettercallsal
 Author                          : Kranti Konganti
-Version                         : 0.7.0
+Version                         : 0.9.0
 Center                          : CFSAN, FDA.
 ================================================================================
 
@@ -75,7 +78,7 @@ Workflow                        : bettercallsal_db
 
 Author                          : Kranti Konganti
 
-Version                         : 0.7.0
+Version                         : 1.0.0
 
 
 Required                        : 

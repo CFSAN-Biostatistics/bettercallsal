@@ -2,6 +2,8 @@
 
 `bettercallsal` is an automated workflow to assign Salmonella serotype based on [NCBI Pathogen Detection](https://www.ncbi.nlm.nih.gov/pathogens) Project for [Salmonella](https://www.ncbi.nlm.nih.gov/pathogens/isolates/#taxgroup_name:%22Salmonella%20enterica%22). It uses `MASH` to reduce the search space followed by additional genome filtering with `sourmash`. It then performs genome based alignment with `kma` followed by count generation using `salmon`. This workflow can be used to analyze shotgun metagenomics datasets, quasi-metagenomic datasets (enriched for Salmonella) and target enriched datasets (enriched with molecular baits specific for Salmonella) and is especially useful in a case where a sample is of multi-serovar mixture.
 
+`bettercallsal` works on both **Illumina** short reads and **Oxford Nanopore** long reads.
+
 It is written in **Nextflow** and is part of the modular data analysis pipelines (**CFSAN PIPELINES** or **CPIPES** for short) at **CFSAN**.
 
 \

@@ -37,6 +37,9 @@ switch ("${params.pipeline}") {
     case "bettercallsal":
         include { BETTERCALLSAL } from "${params.workflows}${params.fs}${params.pipeline}"
         break
+    case "bettercallsal_lr":
+        include { BETTERCALLSAL_LR } from "${params.workflows}${params.fs}${params.pipeline}"
+        break
     case "bettercallsal_db":
         include { BETTERCALLSAL_DB } from "${params.workflows}${params.fs}${params.pipeline}"
         break
@@ -54,6 +57,9 @@ workflow {
     switch ("${params.pipeline}") {
         case "bettercallsal":
             BETTERCALLSAL()
+            break
+        case "bettercallsal_lr":
+            BETTERCALLSAL_LR()
             break
         case "bettercallsal_db":
             BETTERCALLSAL_DB()

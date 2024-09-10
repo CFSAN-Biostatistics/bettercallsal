@@ -10,7 +10,6 @@ import logging
 import os
 import pprint
 import re
-import shutil
 
 # Set logging.
 logging.basicConfig(

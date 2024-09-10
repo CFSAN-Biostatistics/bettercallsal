@@ -17,9 +17,11 @@
   - [Runtime profiles](#runtime-profiles)
   - [your_institution.config](#your_institutionconfig)
   - [Cloud computing](#cloud-computing)
-  - [Example data](#example-data)
+- [Example data](#example-data)
+- [ONT long reads](#ont-long-reads)
 - [Using sourmash](#using-sourmash)
 - [bettercallsal CLI Help](#bettercallsal-cli-help)
+- [bettercallsal_lr CLI Help](#bettercallsal_lr-cli-help)
 
 <!-- /TOC -->
 
@@ -28,17 +30,19 @@
 
 ## Minimum Requirements
 
-1. [Nextflow version 23.04.3](https://github.com/nextflow-io/nextflow/releases/download/v23.04.3/nextflow).
+1. [Nextflow version 24.04.3](https://github.com/nextflow-io/nextflow/releases/download/v24.04.3/nextflow).
     - Make the `nextflow` binary executable (`chmod 755 nextflow`) and also make sure that it is made available in your `$PATH`.
     - If your existing `JAVA` install does not support the newest **Nextflow** version, you can try **Amazon**'s `JAVA` (OpenJDK):  [Corretto](https://corretto.aws/downloads/latest/amazon-corretto-17-x64-linux-jdk.tar.gz).
 2. Either of `micromamba` (version `1.0.0`) or `docker` or `singularity` installed and made available in your `$PATH`.
     - Running the workflow via `micromamba` software provisioning is **preferred** as it does not require any `sudo` or `admin` privileges or any other configurations with respect to the various container providers.
-    - To install `micromamba` for your system type, please follow these [installation steps](https://mamba.readthedocs.io/en/latest/micromamba-installation.html#manual-installation) and make sure that the `micromamba` binary is made available in your `$PATH`.
+    - To install `micromamba` for your system type, please follow these [installation steps](https://mamba.readthedocs.io/en/latest/installation/micromamba-installation.html#linux-and-macos) and make sure that the `micromamba` binary is made available in your `$PATH`.
     - Just the `curl` step is sufficient to download the binary as far as running the workflows are concerned.
-    - Once you have finished the installation, **it is important that you downgrade `micromamba` to version `1.0.0`**.
+    - Once you have finished the installation, **it is important that you downgrade `micromamba` to version `1.5.9`**.
+    - First check, if your version is other than `1.5.9` and if not, do the downgrade.
 
         ```bash
-        micromamba self-update --version 1.0.0
+        micromamba --version
+        micromamba self-update --version 1.5.9 -c conda-forge
         ```
 
 3. Minimum of 10 CPU cores and about 16 GBs for main workflow steps. More memory may be required if your **FASTQ** files are big.
@@ -87,7 +91,7 @@ cpipes
       --pipeline bettercallsal \
       --input /path/to/illumina/fastq/dir \
       --output /path/to/output \
-      --bcs_root_dbdir /data/Kranti_Konganti/bettercallsal_db/PDG000000002.2876
+      --bcs_root_dbdir /data/Kranti_Konganti/bettercallsal_db/PDG000000002.3082
 ```
 
 \
@@ -103,7 +107,7 @@ cpipes \
       --pipeline bettercallsal \
       --input /path/to/illumina/fastq/dir \
       --output /path/to/output \
-      --bcs_root_dbdir /data/Kranti_Konganti/bettercallsal_db/PDG000000002.2876 \
+      --bcs_root_dbdir /data/Kranti_Konganti/bettercallsal_db/PDG000000002.3082 \
       --fq_single_end false \
       --fq_suffix '_R1_001.fastq.gz'
 ```
@@ -145,6 +149,15 @@ This goes without saying that all the FASTQ files should have uniform naming pat
 \
 &nbsp;
 
+### ONT long reads
+
+---
+
+Beginning with `v1.0.0`, `bettercallsal` supports **ONT** long reads. Use the `--pipeline bettercallsal_lr` to activate this feature. The `bettercallsal_lr` variant of the pipeline uses `filtlong` to perform quality filtering of **ONT** long reads and `flye` to perform long read assembly. **FastQC** is run before and after quality filtering for read quality inspection via **MultiQC** report.
+
+\
+&nbsp;
+
 ### Output
 
 ---
@@ -170,7 +183,7 @@ cpipes \
     --pipeline bettercallsal \
     --input /path/to/bettercallsal_sim_reads \
     --output /path/to/bettercallsal_sim_reads_output \
-    --bcs_root_dbdir /path/to/PDG000000002.2876
+    --bcs_root_dbdir /path/to/PDG000000002.3082
     --kmaalign_ignorequals \
     --max_cpus 5 \
     -profile stdkondagac \
@@ -271,7 +284,7 @@ After you make sure that you have all the [minimum requirements](#minimum-requir
 
 - Download simulated reads: [S3](https://cfsan-pub-xfer.s3.amazonaws.com/Kranti.Konganti/bettercallsal/bettercallsal_sim_reads.tar.bz2) (~ 3 GB).
 - Download pre-formatted test database: [S3](https://cfsan-pub-xfer.s3.amazonaws.com/Kranti.Konganti/bettercallsal/PDG000000002.2491.test-db.tar.bz2) (~ 75 MB). This test database works only with the simulated reads.
-- Download pre-formatted full database (**Optional**): If you would like to do a complete run with your own **FASTQ** datasets, you can either create your own [database](./bettercallsal_db.md) or use [PDG000000002.2727](https://cfsan-pub-xfer.s3.amazonaws.com/Kranti.Konganti/bettercallsal/PDG000000002.2727.tar.bz2) version of the database (~ 42 GB).
+- Download pre-formatted full database (**Optional**): If you would like to do a complete run with your own **FASTQ** datasets, you can either create your own [database](./bettercallsal_db.md) or use [PDG000000002.3082](https://cfsan-pub-xfer.s3.amazonaws.com/Kranti.Konganti/bettercallsal/PDG000000002.3082.tar.gz) version of the database (~ 48 GB).
 - After succesful run of the workflow, your **MultiQC** report should look something like [this](https://cfsan-pub-xfer.s3.amazonaws.com/Kranti.Konganti/bettercallsal/bettercallsal_sim_reads_mqc.html).
 - It is always a best practice to use absolute UNIX paths and real destinations of symbolic links during pipeline execution. For example, find out the real path(s) of your absolute UNIX path(s) and use that for the `--input` and `--output` options of the pipeline.
 
@@ -289,7 +302,7 @@ cpipes \
     --pipeline bettercallsal \
     --input /path/to/bettercallsal_sim_reads \
     --output /path/to/bettercallsal_sim_reads_output \
-    --bcs_root_dbdir /path/to/PDG000000002.2876
+    --bcs_root_dbdir /path/to/PDG000000002.3082
     --kmaalign_ignorequals \
     -profile stdkondagac \
     -resume
@@ -313,8 +326,11 @@ You can turn **OFF** this feature with `--sourmashsketch_run false` option.
 
 ```text
 [Kranti_Konganti@my-unix-box ]$ cpipes --pipeline bettercallsal --help
-N E X T F L O W  ~  version 23.04.3
-Launching `./bettercallsal/cpipes` [awesome_chandrasekhar] DSL2 - revision: 8da4e11078
+
+ N E X T F L O W   ~  version 24.04.3
+
+Launching `~/apps/bettercallsal/1.0.0/cpipes` [loving_curry] DSL2 - revision: d9b4be42be
+
 ================================================================================
              (o)                  
   ___  _ __   _  _ __    ___  ___ 
@@ -328,7 +344,7 @@ A collection of modular pipelines at CFSAN, FDA.
 --------------------------------------------------------------------------------
 Name                            : bettercallsal
 Author                          : Kranti Konganti
-Version                         : 0.7.0
+Version                         : 0.9.0
 Center                          : CFSAN, FDA.
 ================================================================================
 
@@ -357,4 +373,55 @@ Ex: cpipes --pipeline bettercallsal --help fastp,mash
 --help salmon                   : Show salmon `index` CLI options
 --help gsrpy                    : Show gen_salmon_res_table.py CLI options
 
+```
+
+\
+&nbsp;
+
+## `bettercallsal_lr` CLI Help
+
+```text
+[Kranti_Konganti@my-unix-box ]$ cpipes --pipeline bettercallsal_lr --help
+
+ N E X T F L O W   ~  version 24.04.3
+
+Launching `~/apps/bettercallsal/1.0.0/cpipes` [friendly_sax] DSL2 - revision: d9b4be42be
+
+================================================================================
+             (o)                  
+  ___  _ __   _  _ __    ___  ___ 
+ / __|| '_ \ | || '_ \  / _ \/ __|
+| (__ | |_) || || |_) ||  __/\__ \
+ \___|| .__/ |_|| .__/  \___||___/
+      | |       | |               
+      |_|       |_|
+--------------------------------------------------------------------------------
+A collection of modular pipelines at CFSAN, FDA.
+--------------------------------------------------------------------------------
+Name                            : bettercallsal
+Author                          : Kranti Konganti
+Version                         : 0.9.0
+Center                          : CFSAN, FDA.
+================================================================================
+
+
+--------------------------------------------------------------------------------
+Show configurable CLI options for each tool within bettercallsal_lr
+--------------------------------------------------------------------------------
+Ex: cpipes --pipeline bettercallsal_lr --help
+Ex: cpipes --pipeline bettercallsal_lr --help fastp
+Ex: cpipes --pipeline bettercallsal_lr --help fastp,mash
+--------------------------------------------------------------------------------
+--help filtlong                 : Show filtlong CLI options
+--help mash                     : Show mash `screen` CLI options
+--help tuspy                    : Show get_top_unique_mash_hit_genomes.py CLI
+                                  options
+--help sourmashsketch           : Show sourmash `sketch` CLI options
+--help sourmashgather           : Show sourmash `gather` CLI options
+--help sourmashsearch           : Show sourmash `search` CLI options
+--help sfhpy                    : Show sourmash_filter_hits.py CLI options
+--help flye                     : Show flye CLI options
+--help mlst                     : Show mlst CLI options
+--help abricate                 : Show abricate CLI options
+--help gsrpy                    : Show gen_salmon_res_table.py CLI options
 ```
