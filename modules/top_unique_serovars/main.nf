@@ -1,6 +1,7 @@
 process TOP_UNIQUE_SEROVARS {
     tag "$meta.id"
     label "process_pico"
+    maxForks 5
 
     module (params.enable_module ? "${params.swmodulepath}${params.fs}python${params.fs}3.8.1" : null)
     conda (params.enable_conda ? "conda-forge::python=3.10.4" : null)
