@@ -2,11 +2,11 @@ process FASTP {
     tag "$meta.id"
     label 'process_low'
 
-    module (params.enable_module ? "${params.swmodulepath}${params.fs}fastp${params.fs}0.23.2" : null)
-    conda (params.enable_conda ? "bioconda::fastp=0.23.2 conda-forge::isa-l" : null)
+    module (params.enable_module ? "${params.swmodulepath}${params.fs}fastp${params.fs}1.3.3" : null)
+    conda (params.enable_conda ? "bioconda::fastp=1.3.3 conda-forge::isa-l" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/fastp:0.23.2--h79da9fb_0' :
-        'quay.io/biocontainers/fastp:0.23.2--h79da9fb_0' }"
+        'https://depot.galaxyproject.org/singularity/fastp:1.3.3--h43da1c4_0' :
+        'quay.io/biocontainers/fastp:1.3.3--h43da1c4_0' }"
 
     input:
         tuple val(meta), path(reads)

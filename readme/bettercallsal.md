@@ -11,6 +11,7 @@
 - [CFSAN GalaxyTrakr](#cfsan-galaxytrakr)
 - [Database](#database)
 - [WGS or MGS](#wgs-or-mgs)
+- [Sample Clustering](#sample-clustering)
 - [Usage and Examples](#usage-and-examples)
   - [Input](#input)
   - [Output](#output)
@@ -64,6 +65,22 @@ Please note that the pipeline on [CFSAN GalaxyTrakr](https://galaxytrakr.org) in
 ## WGS or MGS
 
 Starting with **`v1.1.0`**, `bettercallsal` works with both Whole-Genome Sequencing (**WGS**) or Metagenomic Sequencing (**MGS**) datasets. By default, `bettercallsal` assumes the input datasets are from **MGS**. Add command-line option `--input-is-wgs true` to trigger **WGS** specific workflows for both `bettercallsal` and `bettercallsal_lr` pipelines.
+
+\
+&nbsp;
+
+## Sample clustering
+
+`bettercallsal` now performs sample clustering using `mashtree` distances and can automatically upload the `mashtree` generated output to [microreact.org](https://microreact.org). For this to work, create an account and [obtain your API access token from microreact.org](https://docs.microreact.org/api/access-tokens#obtain-your-api-access-token), and put it in a file named `microreact_api.key` and save it inside the [assets](../assets/) folder. If you do not wish to automatically upload the tree to [microreact.org](https://microreact.org), you can turn it off during the command call with `--upload_microreact false` CLI option.
+
+The tree URL generated will be stored inside the `upload_microreact` output folder.
+
+Example: [https://microreact.org/project/oTfDcbvvjGUvuvzhUKv7Ts-bettercallsalruntree](https://microreact.org/project/oTfDcbvvjGUvuvzhUKv7Ts-bettercallsalruntree)
+
+**PLEASE NOTE**: Sample clustering is not yet available for `bettercallsal_lr` pipeline. It will be added in future versions.
+
+---
+![bettercallsal trees](../assets/bcs_tree_demo.gif)
 
 \
 &nbsp;

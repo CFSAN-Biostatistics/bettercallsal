@@ -17,7 +17,7 @@ process TOP_UNIQUE_SEROVARS {
         tuple val(meta), path('*_UNIQUE_HITS_POPUP.txt'), emit: popup, optional: true
         tuple val(meta), path('*_UNIQUE_HITS_ACCS.txt') , emit: accessions, optional: true
         tuple val(meta), path('*_UNIQUE_HITS.fna.gz')   , emit: genomes_fasta, optional: true
-        path'*FAILED.txt'                               , emit: failed, optional: true
+        path '*FAILED.txt'                              , emit: failed, optional: true
         path 'versions.yml'                             , emit: versions
 
     when:
