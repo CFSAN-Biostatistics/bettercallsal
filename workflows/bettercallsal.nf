@@ -81,6 +81,12 @@ if (params.upload_microreact) {
     checkMetadataExists(params.microreact_api_key, 'Microreact API Key')
 }
 
+if (!params.is_input_wgs && params.bcs_skesa_assembly_only) {
+    stopNow("You cannot set --is_input_wgs false and --bcs_skesa_assembly_only true\n" +
+        "at the same time."
+    )
+}
+
 if (reads_platform < 1 || reads_platform == 0) {
     stopNow("Please mention at least one absolute path to input folder which contains\n" +
             "FASTQ files sequenced using the --input option.\n" +
@@ -181,7 +187,7 @@ workflow BETTERCALLSAL {
                     .set { software_versions }
         }
 
-        if (!params.bcs_assembly_only) {
+        if (!params.bcs_skesa_assembly_only) {
 
             if (params.bcs_concat_pe && !params.fq_single_end && !params.bbmerge_run) {
 

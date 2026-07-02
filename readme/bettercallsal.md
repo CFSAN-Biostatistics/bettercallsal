@@ -359,7 +359,7 @@ You can turn **OFF** this feature with `--sourmashsketch_run false` option.
 
 N E X T F L O W   ~  version 25.10.2
 
-Launching `~/apps/bettercallsal/1.1.0/cpipes` [peaceful_hirsch] DSL2 - revision: d9b4be42be
+Launching `~/apps/bettercallsal/cpipes` [peaceful_hirsch] DSL2 - revision: d9b4be42be
 
 ================================================================================
              (o)                  
@@ -399,6 +399,7 @@ Ex: cpipes --pipeline bettercallsal --help fastp,mash
 --help kmaalign                 : Show kma CLI options
 --help skesa                    : Show SKESA CLI options
 --help megahit                  : Show megahit CLI options
+--help tree                     : Show mashtree CLI options
 --help mlst                     : Show mlst CLI options
 --help abricate                 : Show abricate CLI options
 --help salmon                   : Show salmon `index` CLI options
@@ -415,7 +416,7 @@ Ex: cpipes --pipeline bettercallsal --help fastp,mash
 
 N E X T F L O W   ~  version 25.10.2
 
-Launching `~/apps/bettercallsal/1.1.0/cpipes` [friendly_sax] DSL2 - revision: d9b4be42be
+Launching `~/apps/bettercallsal/cpipes` [pensive_hodgkin] DSL2 - revision: d9b4be42be
 
 ================================================================================
              (o)                  
