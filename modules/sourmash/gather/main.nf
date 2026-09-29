@@ -3,7 +3,7 @@ process SOURMASH_GATHER {
     label 'process_micro'
 
     module (params.enable_module ? "${params.swmodulepath}${params.fs}sourmash${params.fs}4.6.1" : null)
-    conda (params.enable_conda ? "conda-forge::python bioconda::sourmash=4.6.1" : null)
+    conda (params.enable_conda ? "conda-forge::python=3.10 conda-forge::setuptools=69 bioconda::sourmash=4.6.1" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/sourmash:4.6.1--hdfd78af_0':
         'quay.io/biocontainers/sourmash:4.6.1--hdfd78af_0' }"

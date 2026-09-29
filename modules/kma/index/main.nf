@@ -2,11 +2,11 @@ process KMA_INDEX {
     tag "$meta.id"
     label 'process_nano'
 
-    module (params.enable_module ? "${params.swmodulepath}${params.fs}kma${params.fs}1.4.4" : null)
-    conda (params.enable_conda ? "conda-forge::libgcc-ng bioconda::kma=1.4.3 conda-forge::coreutils" : null)
+    module (params.enable_module ? "${params.swmodulepath}${params.fs}kma${params.fs}1.6.13" : null)
+    conda (params.enable_conda ? "conda-forge::libgcc-ng bioconda::kma=1.6.13" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/kma:1.4.3--h7132678_1':
-        'quay.io/biocontainers/kma:1.4.3--h7132678_1' }"
+        'https://depot.galaxyproject.org/singularity/kma:1.6.13--h118bc1c_0':
+        'quay.io/biocontainers/kma:1.6.13--h118bc1c_0' }"
 
     input:
         tuple val(meta), path(fasta)
