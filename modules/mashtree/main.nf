@@ -24,7 +24,7 @@ process MASHTREE {
     script:
         def args      = task.ext.args ?: ''
         def prefix    = task.ext.prefix ?: "${meta.id}"
-        def fofn      = (args.toString().matches(/.*file\-of\-files/) ? 'true' : 'false')
+        def fofn      = (args.tokenize().contains('--file-of-files') ? 'true' : 'false')
         """
         while IFS= read -r fa; do
             if [[ -n "\$fa" ]]; then
@@ -33,6 +33,24 @@ process MASHTREE {
                 fi
             fi
         done < "$reference"
+
+        arch="\$(uname -s):\$(uname -m)"
+        new_qt_bindir=""
+
+        case "\$arch" in
+            Darwin:arm64)
+                new_qt_bindir="${projectDir}${params.fs}bin${params.fs}osx-arm64"
+                ;;
+            Linux:x86_64)
+                new_qt_bindir="${projectDir}${params.fs}bin${params.fs}linux-x86_64"
+                ;;
+        esac
+
+        if [ -n "\$new_qt_bindir" ] && [ -x "\$new_qt_bindir/quicktree" ]; then
+            export PATH="\$new_qt_bindir:\$PATH"
+        else
+            echo "System architecture is \$arch and no executable build available for that."
+        fi
 
         mashtree \\
             $args \\

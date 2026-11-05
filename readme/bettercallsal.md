@@ -92,6 +92,7 @@ The successful run of the workflow requires certain database flat files specific
 Please refer to `bettercallsal_db` [README](./bettercallsal_db.md) if you would like to run the workflow on the latest version of the **PDG** release. However, please note that due to recent changes made to NCBI Datasets API rate limits, the `bettercallsal_db` pipeline takes unusually longer to finish running and as such new databases will be released here as we build them.
 
 - Download latest `bettercallsal` database build:
+  - [PDG000000002.4252](https://cfsan-pub-xfer.s3.amazonaws.com/Kranti.Konganti/bettercallsal/PDG000000002.4252.tar.bz2)
   - [PDG000000002.3793](https://cfsan-pub-xfer.s3.amazonaws.com/Kranti.Konganti/bettercallsal/PDG000000002.3793.tar.bz2)
 - Other earlier builds:
   - [PDG000000002.3082](https://cfsan-pub-xfer.s3.amazonaws.com/Kranti.Konganti/bettercallsal/PDG000000002.3082.tar.gz)
