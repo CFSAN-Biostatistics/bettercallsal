@@ -11,8 +11,7 @@ It is written in **Nextflow** and is part of the modular data analysis pipelines
 
 ## Software Information
 
-* The latest release version is **`v1.2.0`**.
-  * New in `v1.2.0`: **Automated Sample Clustering and Visualization ([READ MORE](./readme/bettercallsal.md#sample-clustering))**.
+* The latest release version is **`v1.2.2`**.
 * [See the full changelog](https://github.com/CFSAN-Biostatistics/bettercallsal/releases).
 
 \
