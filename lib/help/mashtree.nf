@@ -42,14 +42,14 @@ def mashtreeHelp(params) {
         'mashtree_sketchsize': [
             clihelp: "The minimum `mash` sketch size. " +
                 "Default: ${params.mashtree_sketchsize}",
-            cliflag: '--sketchsize',
+            cliflag: '--sketch-size',
             clivalue: (params.mashtree_sketchsize ?: '')
         ],
         'mashtree_seed': [
             clihelp: "Seed for `mash` sketch. " +
                 "Default: ${params.mashtree_seed}",
             cliflag: '--seed',
-            clivalue: (params.mashtree_seed ? ' ' : '')
+            clivalue: (params.mashtree_seed ?: '')
         ],
         'mashtree_genomesize': [
             clihelp: 'Define genome size. ' +
